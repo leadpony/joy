@@ -1,0 +1,129 @@
+/*
+ * Copyright 2019 the Joy Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.leadpony.joy.internal;
+
+import static org.leadpony.joy.internal.Requirements.requireNonNull;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+
+/**
+ * An implementation of {@link JsonObjectBuilder}.
+ *
+ * @author leadpony
+ */
+class JsonObjectBuilderImpl implements JsonObjectBuilder {
+
+    private Map<String, JsonValue> properties;
+
+    @Override
+    public JsonObjectBuilder add(String name, JsonValue value) {
+        requireNonNull(name, "name");
+        requireNonNull(value, "value");
+        return put(name, value);
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, String value) {
+        requireNonNull(name, "name");
+        requireNonNull(value, "value");
+        return put(name, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, BigInteger value) {
+        requireNonNull(name, "name");
+        requireNonNull(value, "value");
+        return put(name, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, BigDecimal value) {
+        requireNonNull(name, "name");
+        requireNonNull(value, "value");
+        return put(name, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, int value) {
+        requireNonNull(name, "name");
+        return put(name, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, long value) {
+        requireNonNull(name, "name");
+        return put(name, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, double value) {
+        requireNonNull(name, "name");
+        return put(name, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, boolean value) {
+        requireNonNull(name, "name");
+        return put(name, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonObjectBuilder addNull(String name) {
+        requireNonNull(name, "name");
+        return put(name, JsonValue.NULL);
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, JsonObjectBuilder builder) {
+        requireNonNull(name, "name");
+        requireNonNull(builder, "builder");
+        return put(name, builder.build());
+    }
+
+    @Override
+    public JsonObjectBuilder add(String name, JsonArrayBuilder builder) {
+        requireNonNull(name, "name");
+        requireNonNull(builder, "builder");
+        return put(name, builder.build());
+    }
+
+    @Override
+    public JsonObject build() {
+        if (properties == null) {
+            return JsonValue.EMPTY_JSON_OBJECT;
+        }
+        JsonObject object = new JsonObjectImpl(Collections.unmodifiableMap(properties));
+        properties = null;
+        return object;
+    }
+
+    private JsonObjectBuilder put(String name, JsonValue value) {
+        if (properties == null) {
+            properties = new LinkedHashMap<>();
+        }
+        properties.put(name, value);
+        return this;
+    }
+}
