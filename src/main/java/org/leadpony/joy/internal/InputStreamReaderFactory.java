@@ -36,10 +36,10 @@ import javax.json.JsonException;
  */
 interface InputStreamReaderFactory {
 
-    static final Charset UTF_32BE = Charset.forName("UTF-32BE");
-    static final Charset UTF_32LE = Charset.forName("UTF-32LE");
+    Charset UTF_32BE = Charset.forName("UTF-32BE");
+    Charset UTF_32LE = Charset.forName("UTF-32LE");
 
-    static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
+    Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     /**
      * Creates a reader which will read from the specified input stream. The The

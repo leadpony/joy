@@ -19,6 +19,11 @@ import java.math.BigDecimal;
 
 import javax.json.JsonNumber;
 
+/**
+ * A JSON number which holds an integer.
+ *
+ * @author leadpony
+ */
 class IntJsonNumber extends JsonNumberImpl {
 
     private final int value;

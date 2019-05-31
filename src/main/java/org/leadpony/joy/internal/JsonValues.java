@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import javax.json.JsonNumber;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 
 /**
  * @author leadpony
@@ -77,6 +78,11 @@ final class JsonValues {
 
     static JsonValue valueOf(boolean value) {
         return value ? JsonValue.TRUE : JsonValue.FALSE;
+    }
+
+    static boolean isStructure(JsonValue value) {
+        ValueType type = value.getValueType();
+        return type == ValueType.ARRAY || type == ValueType.OBJECT;
     }
 
     private JsonValues() {

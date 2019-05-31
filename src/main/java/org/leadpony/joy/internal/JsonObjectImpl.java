@@ -52,6 +52,14 @@ class JsonObjectImpl extends AbstractMap<String, JsonValue> implements JsonObjec
         return this;
     }
 
+    /* As a JsonStructure */
+
+    @Override
+    public JsonValue getValue(String jsonPointer) {
+        requireNonNull(jsonPointer, "jsonPointer");
+        return JsonPointerImpl.parse(jsonPointer).getValue(this);
+    }
+
     /* As a JsonObject */
 
     @Override

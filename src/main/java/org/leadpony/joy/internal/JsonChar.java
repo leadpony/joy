@@ -99,6 +99,11 @@ enum JsonChar {
         return new JsonCharSet(chars);
     }
 
+    /**
+     * A set of JSON characters.
+     *
+     * @author leadpony
+     */
     private static class JsonCharSet extends AbstractSet<JsonChar> {
 
         private final EnumSet<JsonChar> chars;

@@ -58,7 +58,7 @@ abstract class AbstractJsonParser implements JsonParser {
     @Override
     public Stream<JsonValue> getArrayStream() {
         if (getCurrentEvent() != Event.START_ARRAY) {
-            throw newIllegalStateException("getArrayStream");
+            throw newIllegalStateException("getArrayStream()");
         }
         return StreamSupport.stream(new JsonArraySpliterator(), false);
     }
@@ -66,7 +66,7 @@ abstract class AbstractJsonParser implements JsonParser {
     @Override
     public Stream<Entry<String, JsonValue>> getObjectStream() {
         if (getCurrentEvent() != Event.START_OBJECT) {
-            throw newIllegalStateException("getObjectStream");
+            throw newIllegalStateException("getObjectStream()");
         }
         return StreamSupport.stream(new JsonObjectSpliterator(), false);
     }
@@ -74,7 +74,7 @@ abstract class AbstractJsonParser implements JsonParser {
     @Override
     public Stream<JsonValue> getValueStream() {
         if (isInCollection()) {
-            throw newIllegalStateException("getValueStream");
+            throw newIllegalStateException("getValueStream()");
         }
         return StreamSupport.stream(new JsonValueSpliterator(), false);
     }
@@ -83,7 +83,7 @@ abstract class AbstractJsonParser implements JsonParser {
     public void skipArray() {
         Event event = getCurrentEvent();
         if (event != Event.START_ARRAY) {
-            throw newIllegalStateException("skipArray");
+            throw newIllegalStateException("skipArray()");
         }
         int depth = 1;
         while (hasNext()) {
@@ -102,7 +102,7 @@ abstract class AbstractJsonParser implements JsonParser {
     public void skipObject() {
         Event event = getCurrentEvent();
         if (event != Event.START_OBJECT) {
-            throw newIllegalStateException("skipObject");
+            throw newIllegalStateException("skipObject()");
         }
         int depth = 1;
         while (hasNext()) {
@@ -136,6 +136,12 @@ abstract class AbstractJsonParser implements JsonParser {
         return new JsonParsingException(message, location);
     }
 
+    /**
+     * A skeletal implementation of {@link Spliterator}.
+     * @author leadpony
+     *
+     * @param <T>
+     */
     abstract static class AbstractSpliterator<T> extends Spliterators.AbstractSpliterator<T> {
 
         protected AbstractSpliterator() {
@@ -149,6 +155,11 @@ abstract class AbstractJsonParser implements JsonParser {
         }
     }
 
+    /**
+     * A spliterator for JSON array.
+     *
+     * @author leadpony
+     */
     class JsonArraySpliterator extends AbstractSpliterator<JsonValue> {
 
         @Override
@@ -162,6 +173,11 @@ abstract class AbstractJsonParser implements JsonParser {
         }
     }
 
+    /**
+     * A spliterator for JSON object.
+     *
+     * @author leadpony
+     */
     class JsonObjectSpliterator extends AbstractSpliterator<Map.Entry<String, JsonValue>> {
 
         @Override
@@ -189,6 +205,11 @@ abstract class AbstractJsonParser implements JsonParser {
         }
     }
 
+    /**
+     * A spliterator for JSON value.
+     *
+     * @author leadpony
+     */
     class JsonValueSpliterator extends AbstractSpliterator<JsonValue> {
 
         @Override

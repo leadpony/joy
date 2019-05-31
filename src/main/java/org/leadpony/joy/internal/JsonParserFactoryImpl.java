@@ -67,13 +67,13 @@ class JsonParserFactoryImpl implements JsonParserFactory, InputStreamReaderFacto
     @Override
     public JsonParser createParser(JsonObject obj) {
         requireNonNull(obj, "obj");
-        return new ValueJsonParser(obj);
+        return new JsonValueParser(obj);
     }
 
     @Override
     public JsonParser createParser(JsonArray array) {
         requireNonNull(array, "array");
-        return new ValueJsonParser(array);
+        return new JsonValueParser(array);
     }
 
     @Override

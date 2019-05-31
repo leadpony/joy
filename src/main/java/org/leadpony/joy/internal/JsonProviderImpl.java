@@ -28,13 +28,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonNumber;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonPatch;
+import javax.json.JsonPatchBuilder;
+import javax.json.JsonPointer;
 import javax.json.JsonReader;
 import javax.json.JsonReaderFactory;
 import javax.json.JsonString;
+import javax.json.JsonStructure;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.spi.JsonProvider;
@@ -133,6 +138,45 @@ public class JsonProviderImpl extends JsonProvider implements InputStreamReaderF
     @Override
     public JsonArrayBuilder createArrayBuilder() {
         return new JsonArrayBuilderImpl();
+    }
+
+    @Override
+    public JsonPointer createPointer(String jsonPointer) {
+        requireNonNull(jsonPointer, "jsonPointer");
+        return JsonPointerImpl.parse(jsonPointer);
+    }
+
+    @Override
+    public JsonPatchBuilder createPatchBuilder() {
+        return new JsonPatchBuilderImpl();
+    }
+
+    @Override
+    public JsonPatchBuilder createPatchBuilder(JsonArray array) {
+        requireNonNull(array, "array");
+        return new JsonPatchBuilderImpl(array);
+    }
+
+    @Override
+    public JsonPatch createPatch(JsonArray array) {
+        requireNonNull(array, "array");
+        return JsonPatchImpl.of(array);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalArgumentException if the type of {@code target} is not the
+     *                                  same as {@code source}.
+     */
+    @Override
+    public JsonPatch createDiff(JsonStructure source, JsonStructure target) {
+        requireNonNull(source, "source");
+        requireNonNull(target, "target");
+        if (source.getValueType() != target.getValueType()) {
+            throw new IllegalArgumentException(Message.PATCH_TYPE_MISMATCH.toString());
+        }
+        return JsonDiffPatchBuilder.createDiff(source, target);
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.leadpony.joy.internal;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -25,6 +26,7 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 import javax.json.stream.JsonLocation;
 
 /**
@@ -32,16 +34,29 @@ import javax.json.stream.JsonLocation;
  *
  * @author leadpony
  */
-class ValueJsonParser extends AbstractJsonParser {
+class JsonValueParser extends AbstractJsonParser {
 
     private static final Scope GLOBAL_SCOPE = new GlobalScope();
     private Scope scope;
 
-    ValueJsonParser(JsonArray value) {
+    private static final Event[] VALUE_EVENTS;
+
+    static {
+        VALUE_EVENTS = new Event[ValueType.values().length];
+        VALUE_EVENTS[ValueType.ARRAY.ordinal()] = Event.START_ARRAY;
+        VALUE_EVENTS[ValueType.OBJECT.ordinal()] = Event.START_OBJECT;
+        VALUE_EVENTS[ValueType.STRING.ordinal()] = Event.VALUE_STRING;
+        VALUE_EVENTS[ValueType.NUMBER.ordinal()] = Event.VALUE_NUMBER;
+        VALUE_EVENTS[ValueType.TRUE.ordinal()] = Event.VALUE_TRUE;
+        VALUE_EVENTS[ValueType.FALSE.ordinal()] = Event.VALUE_FALSE;
+        VALUE_EVENTS[ValueType.NULL.ordinal()] = Event.VALUE_NULL;
+    }
+
+    JsonValueParser(JsonArray value) {
         this.scope = new ArrayScope(value);
     }
 
-    ValueJsonParser(JsonObject value) {
+    JsonValueParser(JsonObject value) {
         this.scope = new ObjectScope(value);
     }
 
@@ -59,7 +74,11 @@ class ValueJsonParser extends AbstractJsonParser {
 
     @Override
     public String getString() {
-        switch (getCurrentEvent()) {
+        Event event = getCurrentEvent();
+        if (event == null) {
+            throw newIllegalStateException("getString");
+        }
+        switch (event) {
         case KEY_NAME:
             return scope.getKey();
         case VALUE_STRING:
@@ -152,29 +171,17 @@ class ValueJsonParser extends AbstractJsonParser {
     }
 
     static Event getEventStarting(JsonValue value) {
-        switch (value.getValueType()) {
-        case ARRAY:
-            return Event.START_ARRAY;
-        case OBJECT:
-            return Event.START_OBJECT;
-        case STRING:
-            return Event.VALUE_STRING;
-        case NUMBER:
-            return Event.VALUE_NUMBER;
-        case TRUE:
-            return Event.VALUE_TRUE;
-        case FALSE:
-            return Event.VALUE_FALSE;
-        case NULL:
-            return Event.VALUE_NULL;
-        default:
-            throw new IllegalStateException();
-        }
+        return VALUE_EVENTS[value.getValueType().ordinal()];
     }
 
+    /**
+     * A scope in a JSON document.
+     *
+     * @author leadpony
+     */
     interface Scope {
 
-        Event getEvent(ValueJsonParser parser);
+        Event getEvent(JsonValueParser parser);
 
         default String getKey() {
             throw new UnsupportedOperationException();
@@ -183,10 +190,15 @@ class ValueJsonParser extends AbstractJsonParser {
         JsonValue getValue();
     }
 
+    /**
+     * A global scope of the JSON document.
+     *
+     * @author leadpony
+     */
     static class GlobalScope implements Scope {
 
         @Override
-        public Event getEvent(ValueJsonParser parser) {
+        public Event getEvent(JsonValueParser parser) {
             throw new NoSuchElementException(Message.PARSER_NO_EVENTS.toString());
         }
 
@@ -196,7 +208,12 @@ class ValueJsonParser extends AbstractJsonParser {
         }
     }
 
-    abstract static  class CollectionScope implements Scope {
+    /**
+     * A scope of a JSON structure.
+     *
+     * @author leadpony
+     */
+    abstract static class CollectionScope implements Scope {
 
         private final Scope outerScope;
 
@@ -209,34 +226,51 @@ class ValueJsonParser extends AbstractJsonParser {
         }
     }
 
+    /**
+     * A scope of a JSON array.
+     *
+     * @author leadpony
+     */
     static class ArrayScope extends CollectionScope {
 
-        private final Iterator<JsonValue> iterator;
+        private final List<JsonValue> items;
+        private final int length;
+        private int index;
         private ArrayState state;
         private JsonValue currentValue;
 
         ArrayScope(JsonArray array) {
             super(GLOBAL_SCOPE);
-            this.iterator = array.iterator();
+            this.items = array;
+            this.length = array.size();
             this.state = ArrayState.START;
             this.currentValue = array;
         }
 
         ArrayScope(JsonArray array, Scope outerScope) {
             super(outerScope);
-            this.iterator = array.iterator();
+            this.items = array;
+            this.length = array.size();
             this.state = ArrayState.ITEM;
             this.currentValue = array;
         }
 
         @Override
-        public Event getEvent(ValueJsonParser parser) {
+        public Event getEvent(JsonValueParser parser) {
             return state.process(parser, this);
         }
 
         @Override
         public JsonValue getValue() {
             return currentValue;
+        }
+
+        final boolean hasNext() {
+            return index < length;
+        }
+
+        final JsonValue getNext() {
+            return items.get(index++);
         }
 
         final void setState(ArrayState state) {
@@ -247,10 +281,15 @@ class ValueJsonParser extends AbstractJsonParser {
             this.currentValue = value;
         }
 
+        /**
+         * A state in a JSON array.
+         *
+         * @author leadpony
+         */
         enum ArrayState {
             START() {
                 @Override
-                public Event process(ValueJsonParser parser, ArrayScope scope) {
+                public Event process(JsonValueParser parser, ArrayScope scope) {
                     scope.setState(ITEM);
                     return Event.START_ARRAY;
                 }
@@ -258,11 +297,10 @@ class ValueJsonParser extends AbstractJsonParser {
 
             ITEM() {
                 @Override
-                public Event process(ValueJsonParser parser, ArrayScope scope) {
+                public Event process(JsonValueParser parser, ArrayScope scope) {
                     Event event;
-                    Iterator<JsonValue> iterator = scope.iterator;
-                    if (iterator.hasNext()) {
-                        JsonValue value = iterator.next();
+                    if (scope.hasNext()) {
+                        JsonValue value = scope.getNext();
                         event = getEventStarting(value);
                         switch (event) {
                         case START_ARRAY:
@@ -284,10 +322,15 @@ class ValueJsonParser extends AbstractJsonParser {
                 }
             };
 
-            abstract Event process(ValueJsonParser parser, ArrayScope scope);
+            abstract Event process(JsonValueParser parser, ArrayScope scope);
         }
     }
 
+    /**
+     * A scope of a JSON object.
+     *
+     * @author leadpony
+     */
     static class ObjectScope extends CollectionScope {
 
         private final Iterator<Map.Entry<String, JsonValue>> iterator;
@@ -310,7 +353,7 @@ class ValueJsonParser extends AbstractJsonParser {
         }
 
         @Override
-        public Event getEvent(ValueJsonParser parser) {
+        public Event getEvent(JsonValueParser parser) {
             return state.process(parser, this);
         }
 
@@ -341,10 +384,15 @@ class ValueJsonParser extends AbstractJsonParser {
             this.state = state;
         }
 
+        /**
+         * A state in a JSON object.
+         *
+         * @author leadpony
+         */
         enum ObjectState {
             START() {
                 @Override
-                public Event process(ValueJsonParser parser, ObjectScope scope) {
+                public Event process(JsonValueParser parser, ObjectScope scope) {
                     scope.setState(KEY);
                     return Event.START_OBJECT;
                 }
@@ -352,22 +400,20 @@ class ValueJsonParser extends AbstractJsonParser {
 
             KEY() {
                 @Override
-                public Event process(ValueJsonParser parser, ObjectScope scope) {
-                    Event event;
+                public Event process(JsonValueParser parser, ObjectScope scope) {
                     if (scope.fetchProperty()) {
-                        event = Event.KEY_NAME;
                         scope.setState(VALUE);
+                        return Event.KEY_NAME;
                     } else {
-                        event = Event.END_OBJECT;
                         parser.setScope(scope.getOuterScope());
+                        return Event.END_OBJECT;
                     }
-                    return event;
                 }
             },
 
             VALUE() {
                 @Override
-                public Event process(ValueJsonParser parser, ObjectScope scope) {
+                public Event process(JsonValueParser parser, ObjectScope scope) {
                     JsonValue value = scope.getValue();
                     Event event = getEventStarting(value);
                     switch (event) {
@@ -385,7 +431,7 @@ class ValueJsonParser extends AbstractJsonParser {
                 }
             };
 
-            abstract Event process(ValueJsonParser parser, ObjectScope scope);
+            abstract Event process(JsonValueParser parser, ObjectScope scope);
         }
     }
 }

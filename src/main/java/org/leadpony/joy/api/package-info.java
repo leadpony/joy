@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 /**
- * Defines the implementation of JSON Processing API (JSR 374).
+ * Provides the extension of JSON Processing API.
+ *
+ * @author leadpony
  */
-module org.leadpony.joy {
-    exports org.leadpony.joy.api;
-
-    requires transitive java.json;
-
-    provides javax.json.spi.JsonProvider
-        with org.leadpony.joy.internal.JsonProviderImpl;
-}
+package org.leadpony.joy.api;

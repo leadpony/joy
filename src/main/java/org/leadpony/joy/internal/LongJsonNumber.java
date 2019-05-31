@@ -17,6 +17,11 @@ package org.leadpony.joy.internal;
 
 import java.math.BigDecimal;
 
+/**
+ * A JSON number which holds a long integer.
+ *
+ * @author leadpony
+ */
 class LongJsonNumber extends JsonNumberImpl {
 
     private final long value;

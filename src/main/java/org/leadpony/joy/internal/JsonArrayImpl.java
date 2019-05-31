@@ -15,6 +15,8 @@
  */
 package org.leadpony.joy.internal;
 
+import static org.leadpony.joy.internal.Requirements.requireNonNull;
+
 import java.util.AbstractList;
 import java.util.List;
 
@@ -47,6 +49,14 @@ class JsonArrayImpl extends AbstractList<JsonValue> implements JsonArray {
     @Override
     public JsonArray asJsonArray() {
         return this;
+    }
+
+    /* As a JsonStructure */
+
+    @Override
+    public JsonValue getValue(String jsonPointer) {
+        requireNonNull(jsonPointer, "jsonPointer");
+        return JsonPointerImpl.parse(jsonPointer).getValue(this);
     }
 
     /* As a JsonArray */

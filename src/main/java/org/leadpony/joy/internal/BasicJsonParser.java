@@ -105,7 +105,7 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     public Event next() {
         if (!hasNext()) {
-            throw new NoSuchElementException(Message.PARSER_ILLEGAL_STATE.toString());
+            throw new NoSuchElementException(Message.PARSER_NO_EVENTS.toString());
         }
         this.readyToNext = false;
         this.location = null;
@@ -121,7 +121,7 @@ class BasicJsonParser extends AbstractJsonParser {
         if (event != Event.KEY_NAME
                 && event != Event.VALUE_STRING
                 && event != Event.VALUE_NUMBER) {
-            throw newIllegalStateException("getString");
+            throw newIllegalStateException("getString()");
         }
         return buildString();
     }
@@ -129,7 +129,7 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     public boolean isIntegralNumber() {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
-            throw newIllegalStateException("isIntegralNumber");
+            throw newIllegalStateException("isIntegralNumber()");
         }
         return !hasFracOrExp || getBigDecimal().scale() == 0;
     }
@@ -137,7 +137,7 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     public int getInt() {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
-            throw newIllegalStateException("getInt");
+            throw newIllegalStateException("getInt()");
         }
         if (canGetIntStrictly()) {
             return getStrictInt();
@@ -149,7 +149,7 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     public long getLong() {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
-            throw newIllegalStateException("getLong");
+            throw newIllegalStateException("getLong()");
         }
         if (canGetLongStrictly()) {
             return getStrictLong();
@@ -161,7 +161,7 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     public BigDecimal getBigDecimal() {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
-            throw newIllegalStateException("getBigDecimal");
+            throw newIllegalStateException("getBigDecimal()");
         }
         if (cachedBigDecimal == null) {
             cachedBigDecimal = buildBigDecimal();
@@ -181,7 +181,7 @@ class BasicJsonParser extends AbstractJsonParser {
     public JsonValue getValue() {
         Event event = getCurrentEvent();
         if (event == null) {
-            throw newIllegalStateException("getValue");
+            throw newIllegalStateException("getValue()");
         }
         switch (event) {
         case VALUE_TRUE:
@@ -202,14 +202,14 @@ class BasicJsonParser extends AbstractJsonParser {
         case END_ARRAY:
         case END_OBJECT:
         default:
-            throw newIllegalStateException("getValue");
+            throw newIllegalStateException("getValue()");
         }
     }
 
     @Override
     public JsonArray getArray() {
         if (getCurrentEvent() != Event.START_ARRAY) {
-            throw newIllegalStateException("getArray");
+            throw newIllegalStateException("getArray()");
         }
         return getValueAsArray();
     }
@@ -217,7 +217,7 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     public JsonObject getObject() {
         if (getCurrentEvent() != Event.START_OBJECT) {
-            throw newIllegalStateException("getObject");
+            throw newIllegalStateException("getObject()");
         }
         return getValueAsObject();
     }

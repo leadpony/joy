@@ -15,10 +15,14 @@
  */
 package org.leadpony.joy.internal;
 
+import static org.leadpony.joy.internal.Requirements.requireNonNull;
+
 import java.util.Map;
 
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 /**
@@ -38,8 +42,20 @@ class JsonBuilderFactoryImpl implements JsonBuilderFactory {
     }
 
     @Override
+    public JsonObjectBuilder createObjectBuilder(JsonObject object) {
+        requireNonNull(object, "object");
+        return new JsonObjectBuilderImpl(object);
+    }
+
+    @Override
     public JsonArrayBuilder createArrayBuilder() {
         return new JsonArrayBuilderImpl();
+    }
+
+    @Override
+    public JsonArrayBuilder createArrayBuilder(JsonArray array) {
+        requireNonNull(array, "array");
+        return new JsonArrayBuilderImpl(array);
     }
 
     @Override

@@ -17,6 +17,11 @@ package org.leadpony.joy.internal;
 
 import java.math.BigDecimal;
 
+/**
+ * A JSON number holding {@code BigDecimal}.
+ *
+ * @author leadpony
+ */
 class BigDecimalJsonNumber extends JsonNumberImpl {
 
     private final BigDecimal value;

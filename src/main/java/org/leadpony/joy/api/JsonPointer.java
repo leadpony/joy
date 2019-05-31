@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.leadpony.joy.api;
+
 /**
- * Defines the implementation of JSON Processing API (JSR 374).
+ * The extended interface of {@link javax.json.JsonPointer}.
+ *
+ * @author leadpony
  */
-module org.leadpony.joy {
-    exports org.leadpony.joy.api;
+public interface JsonPointer extends javax.json.JsonPointer {
 
-    requires transitive java.json;
-
-    provides javax.json.spi.JsonProvider
-        with org.leadpony.joy.internal.JsonProviderImpl;
+    /**
+     * Returns the string representation of this JSON pointer. The value to be
+     * returned is an empty string or a sequence of '{@code /}' prefixed tokens.
+     *
+     * @return the valid escaped JSON Pointer string.
+     */
+    @Override
+    String toString();
 }

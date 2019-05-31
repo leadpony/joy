@@ -37,6 +37,13 @@ class JsonObjectBuilderImpl implements JsonObjectBuilder {
 
     private Map<String, JsonValue> properties;
 
+    JsonObjectBuilderImpl() {
+    }
+
+    JsonObjectBuilderImpl(JsonObject object) {
+        this.properties = new LinkedHashMap<>(object);
+    }
+
     @Override
     public JsonObjectBuilder add(String name, JsonValue value) {
         requireNonNull(name, "name");
@@ -110,6 +117,20 @@ class JsonObjectBuilderImpl implements JsonObjectBuilder {
     }
 
     @Override
+    public JsonObjectBuilder addAll(JsonObjectBuilder builder) {
+        requireNonNull(builder, "builder");
+        requireProperties().putAll(builder.build());
+        return this;
+    }
+
+    @Override
+    public JsonObjectBuilder remove(String name) {
+        requireNonNull(name, "name");
+        requireProperties().remove(name);
+        return this;
+    }
+
+    @Override
     public JsonObject build() {
         if (properties == null) {
             return JsonValue.EMPTY_JSON_OBJECT;
@@ -119,11 +140,15 @@ class JsonObjectBuilderImpl implements JsonObjectBuilder {
         return object;
     }
 
-    private JsonObjectBuilder put(String name, JsonValue value) {
+    private Map<String, JsonValue> requireProperties() {
         if (properties == null) {
             properties = new LinkedHashMap<>();
         }
-        properties.put(name, value);
+        return properties;
+    }
+
+    private JsonObjectBuilder put(String name, JsonValue value) {
+        requireProperties().put(name, value);
         return this;
     }
 }

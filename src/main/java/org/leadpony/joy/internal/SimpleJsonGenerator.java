@@ -334,6 +334,11 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
         return new JsonGenerationException(message.toString());
     }
 
+    /**
+     * A state of this generator.
+     *
+     * @author leadpony
+     */
     enum State {
         INITIAL(Message.GENERATOR_ILLEGAL_CALL_FIRST) {
 

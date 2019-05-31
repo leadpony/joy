@@ -18,6 +18,11 @@ package org.leadpony.joy.internal;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * A JSON number holding {@code BigInteger}.
+ *
+ * @author leadpony
+ */
 class BigIntegerJsonNumber extends BigDecimalJsonNumber {
 
     BigIntegerJsonNumber(BigInteger value) {

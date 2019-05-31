@@ -33,9 +33,16 @@ import javax.json.JsonValue;
  *
  * @author leadpony
  */
-class JsonArrayBuilderImpl implements JsonArrayBuilder {
+final class JsonArrayBuilderImpl implements JsonArrayBuilder {
 
     private List<JsonValue> items;
+
+    JsonArrayBuilderImpl() {
+    }
+
+    JsonArrayBuilderImpl(JsonArray array) {
+        this.items = new ArrayList<>(array);
+    }
 
     @Override
     public JsonArrayBuilder add(JsonValue value) {
@@ -99,6 +106,146 @@ class JsonArrayBuilderImpl implements JsonArrayBuilder {
     }
 
     @Override
+    public JsonArrayBuilder addAll(JsonArrayBuilder builder) {
+        requireNonNull(builder, "builder");
+        requireItems().addAll(builder.build());
+        return this;
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, JsonValue value) {
+        requireNonNull(value, "value");
+        return insert(index, value);
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, String value) {
+        requireNonNull(value, "value");
+        return insert(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, BigDecimal value) {
+        requireNonNull(value, "value");
+        return insert(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, BigInteger value) {
+        requireNonNull(value, "value");
+        return insert(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, int value) {
+        return insert(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, long value) {
+        return insert(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, double value) {
+        return insert(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, boolean value) {
+        return insert(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder addNull(int index) {
+        return insert(index, JsonValue.NULL);
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, JsonObjectBuilder builder) {
+        requireNonNull(builder, "builder");
+        return insert(index, builder.build());
+    }
+
+    @Override
+    public JsonArrayBuilder add(int index, JsonArrayBuilder builder) {
+        requireNonNull(builder, "builder");
+        return insert(index, builder.build());
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, JsonValue value) {
+        requireNonNull(value, "value");
+        return replace(index, value);
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, String value) {
+        requireNonNull(value, "value");
+        return replace(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, BigDecimal value) {
+        requireNonNull(value, "value");
+        return replace(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, BigInteger value) {
+        requireNonNull(value, "value");
+        return replace(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, int value) {
+        return replace(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, long value) {
+        return replace(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, double value) {
+        return replace(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, boolean value) {
+        return replace(index, JsonValues.valueOf(value));
+    }
+
+    @Override
+    public JsonArrayBuilder setNull(int index) {
+        return replace(index, JsonValue.NULL);
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, JsonObjectBuilder builder) {
+        requireNonNull(builder, "builder");
+        // TODO Auto-generated method stub
+        return JsonArrayBuilder.super.set(index, builder);
+    }
+
+    @Override
+    public JsonArrayBuilder set(int index, JsonArrayBuilder builder) {
+        requireNonNull(builder, "builder");
+        // TODO Auto-generated method stub
+        return JsonArrayBuilder.super.set(index, builder);
+    }
+
+    @Override
+    public JsonArrayBuilder remove(int index) {
+        if (items == null) {
+            throw new IndexOutOfBoundsException(index);
+        }
+        items.remove(index);
+        return this;
+    }
+
+    @Override
     public JsonArray build() {
         if (items == null) {
             return JsonValue.EMPTY_JSON_ARRAY;
@@ -108,11 +255,25 @@ class JsonArrayBuilderImpl implements JsonArrayBuilder {
         return array;
     }
 
-    private JsonArrayBuilder append(JsonValue value) {
+    private List<JsonValue> requireItems() {
         if (items == null) {
             items = new ArrayList<>();
         }
-        items.add(value);
+        return items;
+    }
+
+    private JsonArrayBuilder append(JsonValue value) {
+        requireItems().add(value);
+        return this;
+    }
+
+    private JsonArrayBuilder insert(int index, JsonValue value) {
+        requireItems().add(index, value);
+        return this;
+    }
+
+    private JsonArrayBuilder replace(int index, JsonValue value) {
+        requireItems().set(index, value);
         return this;
     }
 }
