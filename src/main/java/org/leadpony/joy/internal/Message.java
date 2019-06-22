@@ -58,7 +58,9 @@ enum Message {
 
     PATCH_ILLEGAL_MOVE_OPERATION,
     PATCH_TEST_FAILED,
-    PATCH_TYPE_MISMATCH;
+    PATCH_TYPE_MISMATCH,
+
+    JSON_VALUE_UNSUPPORTED_TYPE;
 
     private static final String BUNDLE_NAME = Message.class.getPackage().getName() + ".messages";
 

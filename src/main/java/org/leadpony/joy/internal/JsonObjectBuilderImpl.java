@@ -22,6 +22,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -42,6 +43,23 @@ class JsonObjectBuilderImpl implements JsonObjectBuilder {
 
     JsonObjectBuilderImpl(JsonObject object) {
         this.properties = new LinkedHashMap<>(object);
+    }
+
+    JsonObjectBuilderImpl(Map<String, ?> map) {
+        Map<String, JsonValue> properties = new LinkedHashMap<>();
+        for (Map.Entry<String, ?> entry : map.entrySet()) {
+            final String key = entry.getKey();
+            final Object value = entry.getValue();
+            if (value != null && value instanceof Optional) {
+                Optional<?> optional = (Optional<?>) value;
+                if (optional.isPresent()) {
+                    properties.put(key, JsonValues.valueOf(optional.get()));
+                }
+            } else {
+                properties.put(key, JsonValues.valueOf(value));
+            }
+        }
+        this.properties = properties;
     }
 
     @Override

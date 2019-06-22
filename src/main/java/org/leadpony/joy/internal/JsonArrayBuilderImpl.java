@@ -20,8 +20,10 @@ import static org.leadpony.joy.internal.Requirements.requireNonNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -42,6 +44,21 @@ final class JsonArrayBuilderImpl implements JsonArrayBuilder {
 
     JsonArrayBuilderImpl(JsonArray array) {
         this.items = new ArrayList<>(array);
+    }
+
+    JsonArrayBuilderImpl(Collection<?> collection) {
+        List<JsonValue> items = new ArrayList<>();
+        for (Object value : collection) {
+            if (value != null && value instanceof Optional) {
+                Optional<?> optional = (Optional<?>) value;
+                if (optional.isPresent()) {
+                    items.add(JsonValues.valueOf(optional.get()));
+                }
+            } else {
+                items.add(JsonValues.valueOf(value));
+            }
+        }
+        this.items = items;
     }
 
     @Override
@@ -225,15 +242,13 @@ final class JsonArrayBuilderImpl implements JsonArrayBuilder {
     @Override
     public JsonArrayBuilder set(int index, JsonObjectBuilder builder) {
         requireNonNull(builder, "builder");
-        // TODO Auto-generated method stub
-        return JsonArrayBuilder.super.set(index, builder);
+        return replace(index, builder.build());
     }
 
     @Override
     public JsonArrayBuilder set(int index, JsonArrayBuilder builder) {
         requireNonNull(builder, "builder");
-        // TODO Auto-generated method stub
-        return JsonArrayBuilder.super.set(index, builder);
+        return replace(index, builder.build());
     }
 
     @Override

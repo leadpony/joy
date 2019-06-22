@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.leadpony.jsonp-test-suite</groupId>
             <artifactId>jsonp-test-suite</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

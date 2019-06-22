@@ -17,6 +17,8 @@ package org.leadpony.joy.internal;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Map;
 
 import javax.json.JsonNumber;
 import javax.json.JsonString;
@@ -78,6 +80,39 @@ final class JsonValues {
 
     static JsonValue valueOf(boolean value) {
         return value ? JsonValue.TRUE : JsonValue.FALSE;
+    }
+
+    static JsonValue valueOf(Object value) {
+        if (value == null) {
+            return JsonValue.NULL;
+        } else if (value instanceof JsonValue) {
+            return (JsonValue) value;
+        } else if (value instanceof Boolean) {
+            return valueOf(((Boolean) value).booleanValue());
+        } else if (value instanceof Integer) {
+            return valueOf(((Integer) value).intValue());
+        } else if (value instanceof Long) {
+            return valueOf(((Long) value).longValue());
+        } else if (value instanceof Float) {
+            return valueOf(((Float) value).doubleValue());
+        } else if (value instanceof Double) {
+            return valueOf(((Double) value).doubleValue());
+        } else if (value instanceof BigInteger) {
+            return valueOf((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return valueOf((BigDecimal) value);
+        } else if (value instanceof String) {
+            return valueOf((String) value);
+        } else if (value instanceof Collection) {
+            Collection<?> collection = (Collection<?>) value;
+            return new JsonArrayBuilderImpl(collection).build();
+        } else if (value instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, ?> map = (Map<String, ?>) value;
+            return new JsonObjectBuilderImpl(map).build();
+        }
+        throw new IllegalArgumentException(
+            Message.JSON_VALUE_UNSUPPORTED_TYPE.with(value.getClass().getName()));
     }
 
     static boolean isStructure(JsonValue value) {

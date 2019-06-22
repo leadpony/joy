@@ -25,13 +25,16 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
+import javax.json.JsonMergePatch;
 import javax.json.JsonNumber;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonPatch;
 import javax.json.JsonPatchBuilder;
@@ -40,6 +43,7 @@ import javax.json.JsonReader;
 import javax.json.JsonReaderFactory;
 import javax.json.JsonString;
 import javax.json.JsonStructure;
+import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.spi.JsonProvider;
@@ -136,8 +140,32 @@ public class JsonProviderImpl extends JsonProvider implements InputStreamReaderF
     }
 
     @Override
+    public JsonObjectBuilder createObjectBuilder(JsonObject object) {
+        requireNonNull(object, "object");
+        return new JsonObjectBuilderImpl(object);
+    }
+
+    @Override
+    public JsonObjectBuilder createObjectBuilder(Map<String, Object> map) {
+        requireNonNull(map, "map");
+        return new JsonObjectBuilderImpl(map);
+    }
+
+    @Override
     public JsonArrayBuilder createArrayBuilder() {
         return new JsonArrayBuilderImpl();
+    }
+
+    @Override
+    public JsonArrayBuilder createArrayBuilder(JsonArray array) {
+        requireNonNull(array, "array");
+        return new JsonArrayBuilderImpl(array);
+    }
+
+    @Override
+    public JsonArrayBuilder createArrayBuilder(Collection<?> collection) {
+        requireNonNull(collection, "collection");
+        return new JsonArrayBuilderImpl(collection);
     }
 
     @Override
@@ -177,6 +205,19 @@ public class JsonProviderImpl extends JsonProvider implements InputStreamReaderF
             throw new IllegalArgumentException(Message.PATCH_TYPE_MISMATCH.toString());
         }
         return JsonDiffPatchBuilder.createDiff(source, target);
+    }
+
+    @Override
+    public JsonMergePatch createMergePatch(JsonValue patch) {
+        requireNonNull(patch, "patch");
+        return JsonMergePatchImpl.of(patch);
+    }
+
+    @Override
+    public JsonMergePatch createMergeDiff(JsonValue source, JsonValue target) {
+        requireNonNull(source, "source");
+        requireNonNull(target, "target");
+        return JsonMergePatchImpl.between(source, target);
     }
 
     @Override
