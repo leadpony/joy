@@ -181,7 +181,7 @@
                     -Duser.country=US
                     </argLine>
                     <dependenciesToScan>
-                        <dependency>org.leadpony.jsonp-test-suite:jsonp-test-suite</dependency>
+                        <dependency>org.leadpony:jsonp-test-suite</dependency>
                     </dependenciesToScan>
                     <excludes>
                         <exclude />
