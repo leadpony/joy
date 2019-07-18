@@ -17,8 +17,6 @@
  * Defines the implementation of JSON Processing API (JSR 374).
  */
 module org.leadpony.joy {
-    exports org.leadpony.joy.api;
-
     requires transitive java.json;
 
     provides javax.json.spi.JsonProvider

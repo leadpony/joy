@@ -15,7 +15,7 @@
  */
 package org.leadpony.joy.internal;
 
-import org.leadpony.joy.api.JsonPointer;
+import javax.json.JsonPointer;
 
 /**
  * The extended interface of {@link javax.json.JsonPointer}.
