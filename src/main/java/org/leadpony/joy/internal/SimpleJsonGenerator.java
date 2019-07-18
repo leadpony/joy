@@ -15,6 +15,7 @@
  */
 package org.leadpony.joy.internal;
 
+import static org.leadpony.joy.internal.Requirements.requireFiniteNumber;
 import static org.leadpony.joy.internal.Requirements.requireNonNull;
 
 import java.io.IOException;
@@ -133,6 +134,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
     @Override
     public JsonGenerator write(String name, double value) {
         requireNonNull(name, "name");
+        requireFiniteNumber(value);
         state = state.write(this, name, value);
         return this;
     }
@@ -199,6 +201,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
 
     @Override
     public JsonGenerator write(double value) {
+        requireFiniteNumber(value);
         state = state.write(this, value);
         return this;
     }

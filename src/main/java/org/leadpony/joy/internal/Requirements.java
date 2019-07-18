@@ -26,6 +26,12 @@ final class Requirements {
         }
     }
 
+    static void requireFiniteNumber(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            throw new NumberFormatException("value must be a finite number.");
+        }
+    }
+
     private Requirements() {
     }
 }
