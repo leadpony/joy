@@ -16,7 +16,6 @@
 package org.leadpony.joy.internal;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.json.JsonArray;
@@ -301,6 +300,40 @@ interface PatchOperation {
     }
 
     /**
+     * Malformed patch operation.
+     *
+     * @author leadpony
+     */
+    class Malformed implements PatchOperation {
+
+        private final String message;
+
+        Malformed(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public Operation getOperation() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getPath() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <T extends JsonStructure> T apply(T target) {
+            throw new JsonException(message);
+        }
+
+        @Override
+        public JsonObject toJsonObject(JsonObjectBuilder builder) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
      * Converts a JSON array into a list of patch operations.
      *
      * @param array the JSON array to convert.
@@ -310,33 +343,96 @@ interface PatchOperation {
         return array.stream()
             .map(JsonValue::asJsonObject)
             .map(PatchOperation::asOperation)
-            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
     private static PatchOperation asOperation(JsonObject object) {
-        if (object == null) {
-            return null;
-        }
-        String op = object.getString("op");
+
+        String op = object.getString("op", null);
         if (op == null) {
-            return null;
+            return new Malformed(Message.PATCH_NO_OPERATION.toString());
         }
+
         switch (op) {
         case "add":
-            return new Add(object.getString("path"), object.get("value"));
+            return toAdd(object);
         case "remove":
-            return new Remove(object.getString("path"));
+            return toRemove(object);
         case "replace":
-            return new Replace(object.getString("path"), object.get("value"));
+            return toReplace(object);
         case "move":
-            return new Move(object.getString("path"), object.getString("from"));
+            return toMove(object);
         case "copy":
-            return new Copy(object.getString("path"), object.getString("from"));
+            return toCopy(object);
         case "test":
-            return new Test(object.getString("path"), object.get("value"));
+            return toTest(object);
         default:
-            return null;
+            return unknown(op);
         }
+    }
+
+    private static PatchOperation toAdd(JsonObject json) {
+        if (!json.containsKey("path")) {
+            return malformed("add", "path");
+        }
+        if (!json.containsKey("value")) {
+            return malformed("add", "value");
+        }
+        return new Add(json.getString("path"), json.get("value"));
+    }
+
+    private static PatchOperation toRemove(JsonObject json) {
+        if (!json.containsKey("path")) {
+            return malformed("remove", "path");
+        }
+        return new Remove(json.getString("path"));
+    }
+
+    private static PatchOperation toReplace(JsonObject json) {
+        if (!json.containsKey("path")) {
+            return malformed("replace", "path");
+        }
+        if (!json.containsKey("value")) {
+            return malformed("replace", "value");
+        }
+        return new Replace(json.getString("path"), json.get("value"));
+    }
+
+    private static PatchOperation toMove(JsonObject json) {
+        if (!json.containsKey("path")) {
+            return malformed("move", "path");
+        }
+        if (!json.containsKey("from")) {
+            return malformed("move", "from");
+        }
+        return new Move(json.getString("path"), json.getString("from"));
+    }
+
+    private static PatchOperation toCopy(JsonObject json) {
+        if (!json.containsKey("path")) {
+            return malformed("copy", "path");
+        }
+        if (!json.containsKey("from")) {
+            return malformed("copy", "from");
+        }
+        return new Copy(json.getString("path"), json.getString("from"));
+    }
+
+    private static PatchOperation toTest(JsonObject json) {
+        if (!json.containsKey("path")) {
+            return malformed("test", "path");
+        }
+        if (!json.containsKey("value")) {
+            return malformed("test", "value");
+        }
+        return new Test(json.getString("path"), json.get("value"));
+    }
+
+    private static PatchOperation unknown(String op) {
+        return new Malformed(Message.PATCH_UNKNOWN_OPERATION.with(op));
+    }
+
+    private static PatchOperation malformed(String op, String name) {
+        return new Malformed(Message.PATCH_MALFORMED_OPERATION.with(op, name));
     }
 }
