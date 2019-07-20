@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.leadpony</groupId>
             <artifactId>jsonp-test-suite</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <version>0.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

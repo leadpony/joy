@@ -98,7 +98,7 @@ class BasicJsonParser extends AbstractJsonParser {
             return true;
         }
         this.location = null;
-        readyToNext = peekNonSpaceChar() >= 0;
+        readyToNext = state.accepts(peekNonSpaceChar(), this);
         return readyToNext;
     }
 
@@ -868,6 +868,11 @@ class BasicJsonParser extends AbstractJsonParser {
     private enum State {
         INITIAL() {
             @Override
+            boolean accepts(int c, BasicJsonParser parser) {
+                return c >= 0;
+            }
+
+            @Override
             Event process(int c, BasicJsonParser parser) {
                 parser.setState(FINISHED);
                 return parser.processValue(c);
@@ -876,8 +881,17 @@ class BasicJsonParser extends AbstractJsonParser {
 
         FINISHED() {
             @Override
+            boolean accepts(int c, BasicJsonParser parser) {
+                if (c >= 0) {
+                    throw parser.newUnexpectedCharException(c);
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
             Event process(int c, BasicJsonParser parser) {
-                return null;
+                throw parser.newUnexpectedCharException(c);
             }
         },
 
@@ -951,6 +965,14 @@ class BasicJsonParser extends AbstractJsonParser {
 
         private static final Set<JsonChar> COLON_OR_SQURE_BRACKET = JsonChar.of(
                 JsonChar.COLON, JsonChar.CLOSING_SQURE_BRACKET);
+
+        boolean accepts(int c, BasicJsonParser parser) {
+            if (c >= 0) {
+                return true;
+            } else {
+                throw parser.newUnexpectedEndException();
+            }
+        }
 
         abstract Event process(int c, BasicJsonParser parser);
     }
