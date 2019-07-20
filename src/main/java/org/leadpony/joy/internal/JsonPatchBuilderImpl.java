@@ -156,6 +156,9 @@ class JsonPatchBuilderImpl implements JsonPatchBuilder {
     }
 
     private JsonArray buildAsArray() {
+        if (operations == null) {
+            return JsonValue.EMPTY_JSON_ARRAY;
+        }
         JsonArrayBuilder arrayBuilder = new JsonArrayBuilderImpl();
         JsonObjectBuilder objectBuilder = new JsonObjectBuilderImpl();
         for (PatchOperation operation : operations) {

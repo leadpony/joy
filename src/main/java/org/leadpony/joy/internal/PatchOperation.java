@@ -217,7 +217,9 @@ interface PatchOperation {
         public <T extends JsonStructure> T apply(T target) {
             ExtendedJsonPointer from = JsonPointerImpl.parse(this.from);
             ExtendedJsonPointer to = getPointer();
-            if (to.startsWith(from)) {
+            if (from.equals(to)) {
+                return target;
+            } else if (to.startsWith(from)) {
                 String message = Message.PATCH_ILLEGAL_MOVE_OPERATION.with(from, to);
                 throw new JsonException(message);
             }

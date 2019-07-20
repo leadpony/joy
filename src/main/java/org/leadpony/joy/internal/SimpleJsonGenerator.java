@@ -704,14 +704,14 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             @Override
             State writeStartObject(SimpleJsonGenerator g) {
                 g.appendOpeningBracket('{');
-                g.pushState(this);
+                g.pushState(OBJECT);
                 return START_OBJECT;
             }
 
             @Override
             State writeStartArray(SimpleJsonGenerator g) {
                 g.appendOpeningBracket('[');
-                g.pushState(this);
+                g.pushState(OBJECT);
                 return START_ARRAY;
             }
 

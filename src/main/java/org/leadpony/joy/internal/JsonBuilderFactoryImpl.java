@@ -17,6 +17,8 @@ package org.leadpony.joy.internal;
 
 import static org.leadpony.joy.internal.Requirements.requireNonNull;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.json.JsonArray;
@@ -30,10 +32,10 @@ import javax.json.JsonObjectBuilder;
  */
 class JsonBuilderFactoryImpl implements JsonBuilderFactory {
 
-    private final Map<String, ?> config;
+    private final Map<String, ?> configInUse;
 
     JsonBuilderFactoryImpl(Map<String, ?> config) {
-        this.config = config;
+        this.configInUse = Collections.emptyMap();
     }
 
     @Override
@@ -43,6 +45,12 @@ class JsonBuilderFactoryImpl implements JsonBuilderFactory {
 
     @Override
     public JsonObjectBuilder createObjectBuilder(JsonObject object) {
+        requireNonNull(object, "object");
+        return new JsonObjectBuilderImpl(object);
+    }
+
+    @Override
+    public JsonObjectBuilder createObjectBuilder(Map<String, Object> object) {
         requireNonNull(object, "object");
         return new JsonObjectBuilderImpl(object);
     }
@@ -59,7 +67,13 @@ class JsonBuilderFactoryImpl implements JsonBuilderFactory {
     }
 
     @Override
+    public JsonArrayBuilder createArrayBuilder(Collection<?> collection) {
+        requireNonNull(collection, "collection");
+        return new JsonArrayBuilderImpl(collection);
+    }
+
+    @Override
     public Map<String, ?> getConfigInUse() {
-        return config;
+        return configInUse;
     }
 }

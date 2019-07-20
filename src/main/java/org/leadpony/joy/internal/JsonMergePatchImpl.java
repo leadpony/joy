@@ -96,10 +96,18 @@ final class JsonMergePatchImpl implements JsonMergePatch {
         return builder.build();
     }
 
+    /**
+     * Removes any property whose value is null from the object.
+     *
+     * @param object the object to modify.
+     * @return modified object.
+     */
     private static JsonObject removeNull(JsonObject object) {
         JsonObjectBuilder builder = new JsonObjectBuilderImpl();
         object.forEach((k, v) -> {
-            if (v != JsonValue.NULL) {
+            if (v.getValueType() == ValueType.OBJECT) {
+                builder.add(k, removeNull((JsonObject) v));
+            } else if (v != JsonValue.NULL) {
                 builder.add(k, v);
             }
         });
