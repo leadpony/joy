@@ -54,7 +54,7 @@ class JsonReaderImpl implements JsonReader {
             case START_OBJECT:
                 return parser.getObject();
             default:
-                return null;
+                break;
             }
         }
         throw newUnexpectedEndException(ParserEventSet.START_STRUCTURE);
@@ -69,7 +69,6 @@ class JsonReaderImpl implements JsonReader {
             if (event == Event.START_ARRAY) {
                 return parser.getArray();
             }
-            return null;
         }
         throw newUnexpectedEndException(ParserEventSet.START_ARRAY);
     }

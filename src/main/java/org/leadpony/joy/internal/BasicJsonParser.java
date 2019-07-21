@@ -76,7 +76,6 @@ class BasicJsonParser extends AbstractJsonParser {
     private long lineOffset;
 
     private boolean hasFracOrExp;
-    private BigDecimal cachedBigDecimal;
 
     private JsonLocation location = JsonLocationImpl.INITIAL;
 
@@ -163,10 +162,7 @@ class BasicJsonParser extends AbstractJsonParser {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
             throw newIllegalStateException("getBigDecimal()");
         }
-        if (cachedBigDecimal == null) {
-            cachedBigDecimal = buildBigDecimal();
-        }
-        return cachedBigDecimal;
+        return buildBigDecimal();
     }
 
     @Override
@@ -517,12 +513,14 @@ class BasicJsonParser extends AbstractJsonParser {
     }
 
     private void parseEscapedString() {
-        this.readBuffer[this.valueEnd++] = unescape();
+        char unescaped = unescape();
+        this.readBuffer[this.valueEnd++] = unescaped;
 
         int c;
         while (((c = peekValueChar()) != '"')) {
             if (c == '\\') {
-                this.readBuffer[this.valueEnd++] = unescape();
+                unescaped = unescape();
+                this.readBuffer[this.valueEnd++] = unescaped;
             } else if (c >= 0x20) {
                 this.readBuffer[this.valueEnd++] = (char) c;
                 consumeChar();
