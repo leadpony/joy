@@ -137,18 +137,35 @@ class JsonValueParser extends AbstractJsonParser {
         if (getCurrentEvent() != Event.START_OBJECT) {
             throw newIllegalStateException("getObject");
         }
-        return (JsonObject) scope.getValue();
+        final JsonObject object = (JsonObject) scope.getValue();
+        skipObject();
+        return object;
     }
 
     @Override
     public JsonValue getValue() {
         Event event = getCurrentEvent();
-        if (event == Event.END_ARRAY
-                || event == Event.END_OBJECT
-                || event == null) {
+        if (event == null) {
             throw newIllegalStateException("getValue");
         }
-        return scope.getValue();
+        JsonValue value;
+        switch (event) {
+        case START_ARRAY:
+            value = scope.getValue();
+            skipArray();
+            break;
+        case START_OBJECT:
+            value = scope.getValue();
+            skipObject();
+            break;
+        case END_ARRAY:
+        case END_OBJECT:
+            throw newIllegalStateException("getValue");
+        default:
+            value = scope.getValue();
+            break;
+        }
+        return value;
     }
 
     @Override
@@ -156,7 +173,9 @@ class JsonValueParser extends AbstractJsonParser {
         if (getCurrentEvent() != Event.START_ARRAY) {
             throw newIllegalStateException("getArray");
         }
-        return (JsonArray) scope.getValue();
+        final JsonArray array = (JsonArray) scope.getValue();
+        skipArray();
+        return array;
     }
 
     /* As a AbstractJsonParser */
