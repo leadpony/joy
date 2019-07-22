@@ -348,7 +348,7 @@ interface PatchOperation {
             .collect(Collectors.toList());
     }
 
-    private static PatchOperation asOperation(JsonObject object) {
+    static PatchOperation asOperation(JsonObject object) {
 
         String op = object.getString("op", null);
         if (op == null) {
@@ -373,7 +373,7 @@ interface PatchOperation {
         }
     }
 
-    private static PatchOperation toAdd(JsonObject json) {
+    static PatchOperation toAdd(JsonObject json) {
         if (!json.containsKey("path")) {
             return malformed("add", "path");
         }
@@ -383,14 +383,14 @@ interface PatchOperation {
         return new Add(json.getString("path"), json.get("value"));
     }
 
-    private static PatchOperation toRemove(JsonObject json) {
+    static PatchOperation toRemove(JsonObject json) {
         if (!json.containsKey("path")) {
             return malformed("remove", "path");
         }
         return new Remove(json.getString("path"));
     }
 
-    private static PatchOperation toReplace(JsonObject json) {
+    static PatchOperation toReplace(JsonObject json) {
         if (!json.containsKey("path")) {
             return malformed("replace", "path");
         }
@@ -400,7 +400,7 @@ interface PatchOperation {
         return new Replace(json.getString("path"), json.get("value"));
     }
 
-    private static PatchOperation toMove(JsonObject json) {
+    static PatchOperation toMove(JsonObject json) {
         if (!json.containsKey("path")) {
             return malformed("move", "path");
         }
@@ -410,7 +410,7 @@ interface PatchOperation {
         return new Move(json.getString("path"), json.getString("from"));
     }
 
-    private static PatchOperation toCopy(JsonObject json) {
+    static PatchOperation toCopy(JsonObject json) {
         if (!json.containsKey("path")) {
             return malformed("copy", "path");
         }
@@ -420,7 +420,7 @@ interface PatchOperation {
         return new Copy(json.getString("path"), json.getString("from"));
     }
 
-    private static PatchOperation toTest(JsonObject json) {
+    static PatchOperation toTest(JsonObject json) {
         if (!json.containsKey("path")) {
             return malformed("test", "path");
         }
@@ -430,11 +430,11 @@ interface PatchOperation {
         return new Test(json.getString("path"), json.get("value"));
     }
 
-    private static PatchOperation unknown(String op) {
+    static PatchOperation unknown(String op) {
         return new Malformed(Message.PATCH_UNKNOWN_OPERATION.with(op));
     }
 
-    private static PatchOperation malformed(String op, String name) {
+    static PatchOperation malformed(String op, String name) {
         return new Malformed(Message.PATCH_MALFORMED_OPERATION.with(op, name));
     }
 }

@@ -254,7 +254,7 @@ final class JsonArrayBuilderImpl implements JsonArrayBuilder {
     @Override
     public JsonArrayBuilder remove(int index) {
         if (items == null) {
-            throw new IndexOutOfBoundsException(index);
+            throw new IndexOutOfBoundsException("Index out of range: " + index);
         }
         items.remove(index);
         return this;
