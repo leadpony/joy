@@ -36,9 +36,19 @@ import javax.json.JsonException;
  */
 interface InputStreamReaderFactory {
 
+    /**
+     * UTF-32 Big Endian.
+     */
     Charset UTF_32BE = Charset.forName("UTF-32BE");
+
+    /**
+     * UTF-32 Little Endian.
+     */
     Charset UTF_32LE = Charset.forName("UTF-32LE");
 
+    /**
+     * The default character encoding.
+     */
     Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     /**

@@ -61,6 +61,12 @@ public class JsonProviderImpl extends JsonProvider implements InputStreamReaderF
 
     private final CharBufferFactory bufferFactory = new PooledCharBufferFactory();
 
+    /**
+     * Constructs this provider.
+     */
+    public JsonProviderImpl() {
+    }
+
     @Override
     public JsonParser createParser(Reader reader) {
         requireNonNull(reader, "reader");

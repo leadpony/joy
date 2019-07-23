@@ -7,7 +7,7 @@
 
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>org.leadpony.joy</name>
     <description>
@@ -99,7 +99,9 @@
                             <additionalJOption>-J-Duser.language=en</additionalJOption>
                             <additionalJOption>-html5</additionalJOption>
                         </additionalJOptions>
+                        <!--
                         <excludePackageNames>org.leadpony.joy.internal</excludePackageNames>
+                        -->
                         <detectJavaApiLink>false</detectJavaApiLink>
                         <offlineLinks>
                             <offlineLink>
@@ -217,6 +219,19 @@
                                         <exclude>module-info.java</exclude>
                                     </excludes>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
