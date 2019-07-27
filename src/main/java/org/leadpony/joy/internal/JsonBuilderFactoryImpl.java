@@ -18,7 +18,6 @@ package org.leadpony.joy.internal;
 import static org.leadpony.joy.internal.Requirements.requireNonNull;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.json.JsonArray;
@@ -30,12 +29,10 @@ import javax.json.JsonObjectBuilder;
 /**
  * @author leadpony
  */
-class JsonBuilderFactoryImpl implements JsonBuilderFactory {
-
-    private final Map<String, ?> configInUse;
+class JsonBuilderFactoryImpl extends ConfiguredFactory implements JsonBuilderFactory {
 
     JsonBuilderFactoryImpl(Map<String, ?> config) {
-        this.configInUse = Collections.emptyMap();
+        super(config, NO_SUPPORTED_PROPERTIES);
     }
 
     @Override
@@ -70,10 +67,5 @@ class JsonBuilderFactoryImpl implements JsonBuilderFactory {
     public JsonArrayBuilder createArrayBuilder(Collection<?> collection) {
         requireNonNull(collection, "collection");
         return new JsonArrayBuilderImpl(collection);
-    }
-
-    @Override
-    public Map<String, ?> getConfigInUse() {
-        return configInUse;
     }
 }

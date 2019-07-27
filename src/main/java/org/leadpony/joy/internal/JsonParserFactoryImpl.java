@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.json.JsonArray;
@@ -34,13 +33,12 @@ import javax.json.stream.JsonParserFactory;
  *
  * @author leadpony
  */
-class JsonParserFactoryImpl implements JsonParserFactory, InputStreamReaderFactory {
+class JsonParserFactoryImpl extends ConfiguredFactory implements JsonParserFactory, InputStreamReaderFactory {
 
-    private final Map<String, ?> configInUse;
     private final CharBufferFactory bufferFactory;
 
     JsonParserFactoryImpl(Map<String, ?> config, CharBufferFactory bufferFactory) {
-        this.configInUse = Collections.emptyMap();
+        super(config, NO_SUPPORTED_PROPERTIES);
         this.bufferFactory = bufferFactory;
     }
 
@@ -75,10 +73,5 @@ class JsonParserFactoryImpl implements JsonParserFactory, InputStreamReaderFacto
     public JsonParser createParser(JsonArray array) {
         requireNonNull(array, "array");
         return new JsonValueParser(array);
-    }
-
-    @Override
-    public Map<String, ?> getConfigInUse() {
-        return configInUse;
     }
 }

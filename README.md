@@ -33,7 +33,7 @@ Next, add this software as an implementation of the API.
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <scope>runtime</scope>
 </dependency>
 ```

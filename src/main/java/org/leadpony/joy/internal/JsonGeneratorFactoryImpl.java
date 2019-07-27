@@ -32,15 +32,18 @@ import javax.json.stream.JsonGeneratorFactory;
  *
  * @author leadpony
  */
-class JsonGeneratorFactoryImpl implements JsonGeneratorFactory {
+class JsonGeneratorFactoryImpl extends ConfiguredFactory implements JsonGeneratorFactory {
 
-    private final Map<String, ?> config;
+    private static final String[] SUPPORTED_PROPERTIES = {
+        JsonGenerator.PRETTY_PRINTING
+    };
+
     private final boolean prettyPrinting;
     private final CharBufferFactory bufferFactory;
 
     JsonGeneratorFactoryImpl(Map<String, ?> config, CharBufferFactory bufferFactory) {
-        this.config = config;
-        this.prettyPrinting = config.containsKey(JsonGenerator.PRETTY_PRINTING);
+        super(config, SUPPORTED_PROPERTIES);
+        this.prettyPrinting = containsProperty(JsonGenerator.PRETTY_PRINTING);
         this.bufferFactory = bufferFactory;
     }
 
@@ -63,11 +66,6 @@ class JsonGeneratorFactoryImpl implements JsonGeneratorFactory {
         requireNonNull(charset, "charset");
         Writer writer = new OutputStreamWriter(out, charset);
         return createConfiguredGenerator(writer);
-    }
-
-    @Override
-    public Map<String, ?> getConfigInUse() {
-        return config;
     }
 
     private JsonGenerator createConfiguredGenerator(Writer writer) {
