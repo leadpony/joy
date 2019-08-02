@@ -22,43 +22,48 @@ import java.io.Writer;
  */
 class PrettyJsonGenerator extends CompactJsonGenerator {
 
-    private static final int SPACES_PER_INDENTATION = 4;
-    private int indentSize;
+    private final int indentSize;
+    private int totalIndentSize;
 
-    PrettyJsonGenerator(Writer writer, CharBufferFactory bufferFactory) {
+    PrettyJsonGenerator(Writer writer, CharBufferFactory bufferFactory, int indentSize) {
         super(writer, bufferFactory);
+        this.indentSize = indentSize;
     }
 
     @Override
     protected void appendOpeningBracket(char c) {
         super.appendOpeningBracket(c);
-        indentSize += SPACES_PER_INDENTATION;
+        totalIndentSize += indentSize;
     }
 
     @Override
     protected void appendClosingBracket(char c) {
-        indentSize -= SPACES_PER_INDENTATION;
+        totalIndentSize -= indentSize;
         append('\n');
-        append(' ', indentSize);
+        indent();
         super.appendClosingBracket(c);
     }
 
     @Override
     protected void appendBreak() {
         append('\n');
-        append(' ', indentSize);
+        indent();
     }
 
     @Override
     protected void appendComma() {
         super.appendComma();
         append('\n');
-        append(' ', indentSize);
+        indent();
     }
 
     @Override
     protected void appendColon() {
         super.appendColon();
         append(' ');
+    }
+
+    private void indent() {
+        append(' ', totalIndentSize);
     }
 }

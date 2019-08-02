@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author leadpony
  */
-class ConfiguredFactory {
+class ConfigurableFactory {
 
     static final String[] NO_SUPPORTED_PROPERTIES = {};
 
@@ -36,7 +36,7 @@ class ConfiguredFactory {
      * @param properties all of the configuration properties.
      * @param supported the keys of configuration properties which this factory supports.
      */
-    protected ConfiguredFactory(Map<String, ?> properties, String... supported) {
+    protected ConfigurableFactory(Map<String, ?> properties, String... supported) {
         if (supported.length == 0) {
             this.properties = Collections.emptyMap();
         } else {
@@ -56,5 +56,15 @@ class ConfiguredFactory {
 
     final boolean containsProperty(String key) {
         return properties.containsKey(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    final <T> T getPropertyValue(String key, T defaultValue) {
+        Object value = properties.get(key);
+        if (defaultValue.getClass().isInstance(value)) {
+            return (T) value;
+        } else {
+            return defaultValue;
+        }
     }
 }

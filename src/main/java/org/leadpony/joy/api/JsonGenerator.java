@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.leadpony.joy.api;
+
 /**
- * Defines the implementation of JSON Processing API (JSR 374).
+ * An extended {@link JsonGenerator}.
+ *
+ * @author leadpony
  */
-module org.leadpony.joy {
-    requires transitive java.json;
+public interface JsonGenerator extends javax.json.stream.JsonGenerator {
 
-    exports org.leadpony.joy.api;
-
-    provides javax.json.spi.JsonProvider
-        with org.leadpony.joy.internal.JsonProviderImpl;
+    /**
+     * Configuration property to specify the number of spaces to be used as an
+     * indentation. By default the number is 4.
+     */
+    String INDENTATION_SIZE = "org.leadpony.joy.api.JsonGenerator.indentationSize";
 }

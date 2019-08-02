@@ -33,7 +33,7 @@ import javax.json.stream.JsonParserFactory;
  *
  * @author leadpony
  */
-class JsonParserFactoryImpl extends ConfiguredFactory implements JsonParserFactory, InputStreamReaderFactory {
+class JsonParserFactoryImpl extends ConfigurableFactory implements JsonParserFactory, InputStreamReaderFactory {
 
     private final CharBufferFactory bufferFactory;
 

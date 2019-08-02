@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.0.1 - 2019-07-28
 ### Fixed
-- `getConfigInUse()` methods now returns only properties recognized by the factory.
+- `getConfigInUse()` methods now return only properties recognized by the factory.
 
 ## 1.0.0 - 2019-07-23
 ### Added

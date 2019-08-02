@@ -29,7 +29,7 @@ import javax.json.JsonObjectBuilder;
 /**
  * @author leadpony
  */
-class JsonBuilderFactoryImpl extends ConfiguredFactory implements JsonBuilderFactory {
+class JsonBuilderFactoryImpl extends ConfigurableFactory implements JsonBuilderFactory {
 
     JsonBuilderFactoryImpl(Map<String, ?> config) {
         super(config, NO_SUPPORTED_PROPERTIES);

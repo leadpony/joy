@@ -33,7 +33,8 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonGenerationException;
-import javax.json.stream.JsonGenerator;
+
+import org.leadpony.joy.api.JsonGenerator;
 
 /**
  * @author leadpony

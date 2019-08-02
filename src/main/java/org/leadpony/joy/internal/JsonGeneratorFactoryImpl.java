@@ -24,26 +24,32 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
+
+import org.leadpony.joy.api.JsonGenerator;
 
 /**
  * An implementation of {@link JsonGeneratorFactory}.
  *
  * @author leadpony
  */
-class JsonGeneratorFactoryImpl extends ConfiguredFactory implements JsonGeneratorFactory {
+class JsonGeneratorFactoryImpl extends ConfigurableFactory implements JsonGeneratorFactory {
 
     private static final String[] SUPPORTED_PROPERTIES = {
-        JsonGenerator.PRETTY_PRINTING
+        JsonGenerator.PRETTY_PRINTING,
+        JsonGenerator.INDENTATION_SIZE
     };
 
+    private static final int DEFAULT_INDENT_SIZE = 4;
+
     private final boolean prettyPrinting;
+    private final int indentSize;
     private final CharBufferFactory bufferFactory;
 
     JsonGeneratorFactoryImpl(Map<String, ?> config, CharBufferFactory bufferFactory) {
         super(config, SUPPORTED_PROPERTIES);
         this.prettyPrinting = containsProperty(JsonGenerator.PRETTY_PRINTING);
+        this.indentSize = getPropertyValue(JsonGenerator.INDENTATION_SIZE, DEFAULT_INDENT_SIZE);
         this.bufferFactory = bufferFactory;
     }
 
@@ -70,7 +76,7 @@ class JsonGeneratorFactoryImpl extends ConfiguredFactory implements JsonGenerato
 
     private JsonGenerator createConfiguredGenerator(Writer writer) {
         if (prettyPrinting) {
-            return new PrettyJsonGenerator(writer, bufferFactory);
+            return new PrettyJsonGenerator(writer, bufferFactory, indentSize);
         } else {
             return new CompactJsonGenerator(writer, bufferFactory);
         }
