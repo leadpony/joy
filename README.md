@@ -10,7 +10,8 @@ Joy is a fast and robust JSON parser implementing Java API for JSON Processing (
 ## Key Features
 
 * Fully compliant with version 1.1 of [Java API for JSON Processing (JSR 374)].
-* Passes all tests provided by [JSON-P Test Suite].
+* Passes more than 2,000 tests provided by [JSON-P Test Suite].
+* Works well with [Java API for JSON Binding (JSR 367)].
 * Supports Java 8 and higher.
 * Can be used as a modular jar in Java 9 and higher.
 * Developed from scratch to produce cleaner code.
@@ -23,13 +24,34 @@ Add this software to `pom.xml` as the implementation of the JSON-P API instead o
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <scope>runtime</scope>
 </dependency>
 ```
+## Beyond the Standard API
+
+For using the provider-specific API shown below, `scope` element of `dependency` must be changed from `runtime` to `compile` or be removed entirely.
+
+The provider-specific API is available in `org.leadpony.joy.api` package.
+
+### JsonGenerator
+
+The following configuration properties are added.
+
+* INDENTATION_SIZE
+
+  Specifies the number of spaces to be used as an
+  indentation. The value of the property must be an integer. By default the
+  number is 4.
+
+* TAB_INDENTATION
+
+  Uses a tab for indentation instead of spaces. The
+  value of the property could be be anything.
 
 ## Additional Resources
-* [API Reference in Javadoc]
+* [JSON-P API Reference in Javadoc]
+* [Joy API Reference in Javadoc]
 * [Changelog]
 
 ## Building from Source
@@ -52,8 +74,10 @@ Copyright &copy; 2019 the Joy Authors. This software is licensed under [Apache L
 
 [Apache 2.0 License]: https://www.apache.org/licenses/LICENSE-2.0
 [Java API for JSON Processing (JSR 374)]: https://eclipse-ee4j.github.io/jsonp/
+[Java API for JSON Binding (JSR 367)]: http://json-b.net/
 [JSON-P Test Suite]: https://github.com/leadpony/jsonp-test-suite
-[API Reference in Javadoc]: https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.5
+[JSON-P API Reference in Javadoc]: https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.5
+[Joy API Reference in Javadoc]: https://javadoc.io/doc/org.leadpony.joy/joy
 [Changelog]: CHANGELOG.md
 [Maven]: https://maven.apache.org/
 [Jakarta JSON Processing]: https://eclipse-ee4j.github.io/jsonp/
