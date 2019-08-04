@@ -24,7 +24,33 @@ public interface JsonGenerator extends javax.json.stream.JsonGenerator {
 
     /**
      * Configuration property to specify the number of spaces to be used as an
-     * indentation. By default the number is 4.
+     * indentation. The value of the property must be an integer. By default the
+     * number is 4.
+     *
+     * <pre>
+     * <code>
+     * Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();
+     * config.put(JsonGenerator.PRETTY_PRINTING, Boolean.TRUE);
+     * config.put(JsonGenerator.INDENTATION_SIZE, 2);
+     * </code>
+     * </pre>
+     *
+     * @since 1.1
      */
     String INDENTATION_SIZE = "org.leadpony.joy.api.JsonGenerator.indentationSize";
+
+    /**
+     * Configuration property to use tab for indentation instead of spaces. The
+     * value of the property could be be anything.
+     * <pre>
+     * <code>
+     * Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();
+     * config.put(JsonGenerator.PRETTY_PRINTING, Boolean.TRUE);
+     * config.put(JsonGenerator.TAB_INDENTATION, Boolean.TRUE);
+     * </code>
+     * </pre>
+     *
+     * @since 1.1
+     */
+    String TAB_INDENTATION = "org.leadpony.joy.api.JsonGenerator.tabIndentation";
 }

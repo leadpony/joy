@@ -20,41 +20,43 @@ import java.io.Writer;
 /**
  * @author leadpony
  */
-class PrettyJsonGenerator extends CompactJsonGenerator {
+final class PrettyJsonGenerator extends CompactJsonGenerator {
 
-    private final int indentSize;
-    private int totalIndentSize;
+    private final char indentationChar;
+    private final int indentationSize;
+    private int indentationTotal;
 
-    PrettyJsonGenerator(Writer writer, CharBufferFactory bufferFactory, int indentSize) {
+    PrettyJsonGenerator(Writer writer, CharBufferFactory bufferFactory, char indentationChar, int indentationSize) {
         super(writer, bufferFactory);
-        this.indentSize = indentSize;
+        this.indentationChar = indentationChar;
+        this.indentationSize = indentationSize;
     }
 
     @Override
     protected void appendOpeningBracket(char c) {
         super.appendOpeningBracket(c);
-        totalIndentSize += indentSize;
+        indent();
     }
 
     @Override
     protected void appendClosingBracket(char c) {
-        totalIndentSize -= indentSize;
+        dedent();
         append('\n');
-        indent();
+        appendIndentation();
         super.appendClosingBracket(c);
     }
 
     @Override
     protected void appendBreak() {
         append('\n');
-        indent();
+        appendIndentation();
     }
 
     @Override
     protected void appendComma() {
         super.appendComma();
         append('\n');
-        indent();
+        appendIndentation();
     }
 
     @Override
@@ -64,6 +66,14 @@ class PrettyJsonGenerator extends CompactJsonGenerator {
     }
 
     private void indent() {
-        append(' ', totalIndentSize);
+        indentationTotal += indentationSize;
+    }
+
+    private void dedent() {
+        indentationTotal -= indentationSize;
+    }
+
+    private void appendIndentation() {
+        append(indentationChar, indentationTotal);
     }
 }

@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.leadpony</groupId>
             <artifactId>jsonp-test-suite</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -99,9 +99,7 @@
                             <additionalJOption>-J-Duser.language=en</additionalJOption>
                             <additionalJOption>-html5</additionalJOption>
                         </additionalJOptions>
-                        <!--
                         <excludePackageNames>org.leadpony.joy.internal</excludePackageNames>
-                        -->
                         <detectJavaApiLink>false</detectJavaApiLink>
                         <offlineLinks>
                             <offlineLink>
