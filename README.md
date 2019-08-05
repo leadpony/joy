@@ -47,7 +47,7 @@ The following configuration properties are added.
 * TAB_INDENTATION
 
   Uses a tab for indentation instead of spaces. The
-  value of the property could be be anything.
+  value of the property could be anything.
 
 ## Additional Resources
 * [JSON-P API Reference in Javadoc]

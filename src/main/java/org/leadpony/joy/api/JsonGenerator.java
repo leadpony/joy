@@ -40,8 +40,8 @@ public interface JsonGenerator extends javax.json.stream.JsonGenerator {
     String INDENTATION_SIZE = "org.leadpony.joy.api.JsonGenerator.indentationSize";
 
     /**
-     * Configuration property to use tab for indentation instead of spaces. The
-     * value of the property could be be anything.
+     * Configuration property to use a tab for indentation instead of spaces. The
+     * value of the property could be anything.
      * <pre>
      * <code>
      * Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();
