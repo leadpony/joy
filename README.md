@@ -18,7 +18,17 @@ Joy is a fast and robust JSON parser implementing Java API for JSON Processing (
 
 ## Getting Started
 
-Add this software to `pom.xml` as the implementation of the JSON-P API instead of any other implementations.
+First, add the JSON-P API as a dependency to your `pom.xml`.
+
+```xml
+<dependency>
+    <groupId>jakarta.json</groupId>
+    <artifactId>jakarta.json-api</artifactId>
+    <version>1.1.5</version>
+</dependency>
+```
+
+Next, add this software as an implementation of the API.
 
 ```xml
 <dependency>
