@@ -46,9 +46,9 @@ class BasicJsonParser extends AbstractJsonParser {
 
     private final CharBufferFactory bufferFactory;
 
-    // current state
+    // Current state. This never be {@code null}.
     private State state;
-    // stack of states except current state
+    // Stack of states except the current state.
     private final Deque<State> stateStack = new ArrayDeque<>();
 
     private boolean readyToNext;
@@ -240,6 +240,30 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     boolean isInCollection() {
         return !this.stateStack.isEmpty();
+    }
+
+    @Override
+    boolean isInArray() {
+        Event event = getCurrentEvent();
+        if (event == Event.START_ARRAY || event == Event.END_ARRAY) {
+            return true;
+        }
+        if (this.state.isInArray()) {
+            return true;
+        }
+        return this.stateStack.stream().anyMatch(State::isInArray);
+    }
+
+    @Override
+    boolean isInObject() {
+        Event event = getCurrentEvent();
+        if (event == Event.START_OBJECT || event == Event.END_OBJECT) {
+            return true;
+        }
+        if (this.state.isInObject()) {
+            return true;
+        }
+        return this.stateStack.stream().anyMatch(State::isInObject);
     }
 
     /* As a BasicJsonParser */
@@ -903,6 +927,11 @@ class BasicJsonParser extends AbstractJsonParser {
                 parser.setState(ARRAY_ITEM);
                 return parser.processValue(c);
             }
+
+            @Override
+            boolean isInArray() {
+                return true;
+            }
         },
 
         ARRAY_ITEM() {
@@ -918,6 +947,11 @@ class BasicJsonParser extends AbstractJsonParser {
                     throw parser.newUnexpectedCharException(c, COLON_OR_SQURE_BRACKET);
                 }
             }
+
+            @Override
+            boolean isInArray() {
+                return true;
+            }
         },
 
         OBJECT_FIRST_KEY() {
@@ -929,6 +963,11 @@ class BasicJsonParser extends AbstractJsonParser {
                 }
                 parser.setState(OBJECT_VALUE);
                 return parser.processKey(c);
+            }
+
+            @Override
+            boolean isInObject() {
+                return true;
             }
         },
 
@@ -945,6 +984,11 @@ class BasicJsonParser extends AbstractJsonParser {
                 parser.setState(OBJECT_VALUE);
                 return parser.processKey();
             }
+
+            @Override
+            boolean isInObject() {
+                return true;
+            }
         },
 
         OBJECT_VALUE() {
@@ -955,6 +999,11 @@ class BasicJsonParser extends AbstractJsonParser {
                 }
                 parser.setState(OBJECT_KEY);
                 return parser.processValue();
+            }
+
+            @Override
+            boolean isInObject() {
+                return true;
             }
         };
 
@@ -970,6 +1019,14 @@ class BasicJsonParser extends AbstractJsonParser {
             } else {
                 throw parser.newUnexpectedEndException();
             }
+        }
+
+        boolean isInArray() {
+            return false;
+        }
+
+        boolean isInObject() {
+            return false;
         }
 
         abstract Event process(int c, BasicJsonParser parser);

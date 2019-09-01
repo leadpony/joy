@@ -185,6 +185,34 @@ class JsonValueParser extends AbstractJsonParser {
         return getCurrentEvent() != null;
     }
 
+    @Override
+    boolean isInArray() {
+        Event event = getCurrentEvent();
+        if (event == Event.START_ARRAY || event == Event.END_ARRAY) {
+            return true;
+        }
+        for (Scope scope = this.scope; scope != GLOBAL_SCOPE; scope = scope.getOuterScope()) {
+            if (scope instanceof ArrayScope) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    boolean isInObject() {
+        Event event = getCurrentEvent();
+        if (event == Event.START_OBJECT || event == Event.END_OBJECT) {
+            return true;
+        }
+        for (Scope scope = this.scope; scope != GLOBAL_SCOPE; scope = scope.getOuterScope()) {
+            if (scope instanceof ObjectScope) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     final void setScope(Scope scope) {
         this.scope = scope;
     }
@@ -207,6 +235,10 @@ class JsonValueParser extends AbstractJsonParser {
         }
 
         JsonValue getValue();
+
+        default Scope getOuterScope() {
+            return this;
+        }
     }
 
     /**
@@ -240,7 +272,8 @@ class JsonValueParser extends AbstractJsonParser {
             this.outerScope = outerScope;
         }
 
-        final Scope getOuterScope() {
+        @Override
+        public final Scope getOuterScope() {
             return outerScope;
         }
     }

@@ -81,13 +81,12 @@ abstract class AbstractJsonParser implements JsonParser {
 
     @Override
     public void skipArray() {
-        Event event = getCurrentEvent();
-        if (event != Event.START_ARRAY) {
-            throw newIllegalStateException("skipArray()");
+        if (!isInArray()) {
+            return;
         }
         int depth = 1;
         while (hasNext()) {
-            event = next();
+            Event event = next();
             if (event == Event.END_ARRAY) {
                 if (--depth == 0) {
                     break;
@@ -100,13 +99,12 @@ abstract class AbstractJsonParser implements JsonParser {
 
     @Override
     public void skipObject() {
-        Event event = getCurrentEvent();
-        if (event != Event.START_OBJECT) {
-            throw newIllegalStateException("skipObject()");
+        if (!isInObject()) {
+            return;
         }
         int depth = 1;
         while (hasNext()) {
-            event = next();
+            Event event = next();
             if (event == Event.END_OBJECT) {
                 if (--depth == 0) {
                     break;
@@ -120,6 +118,10 @@ abstract class AbstractJsonParser implements JsonParser {
     /* As a AbstractJsonParser */
 
     abstract boolean isInCollection();
+
+    abstract boolean isInArray();
+
+    abstract boolean isInObject();
 
     static JsonException newJsonException(Message message, IOException e) {
         return new JsonException(message.toString(), e);
