@@ -7,12 +7,12 @@
 
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy-parent</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>org.leadpony.joy-parent</name>
 
     <description>
-    Joy is a JSON processing library based on the JSON Processing API (JSR 374).
+    Joy is yet another implementation of the JSON Processing API (JSR 374).
     </description>
 
     <modules>
