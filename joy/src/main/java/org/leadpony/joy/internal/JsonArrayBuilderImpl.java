@@ -49,7 +49,7 @@ final class JsonArrayBuilderImpl implements JsonArrayBuilder {
     JsonArrayBuilderImpl(Collection<?> collection) {
         List<JsonValue> items = new ArrayList<>();
         for (Object value : collection) {
-            if (value != null && value instanceof Optional) {
+            if (value instanceof Optional) {
                 Optional<?> optional = (Optional<?>) value;
                 if (optional.isPresent()) {
                     items.add(JsonValues.valueOf(optional.get()));

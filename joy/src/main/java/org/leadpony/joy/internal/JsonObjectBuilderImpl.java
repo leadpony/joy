@@ -50,7 +50,7 @@ class JsonObjectBuilderImpl implements JsonObjectBuilder {
         for (Map.Entry<String, ?> entry : map.entrySet()) {
             final String key = entry.getKey();
             final Object value = entry.getValue();
-            if (value != null && value instanceof Optional) {
+            if (value instanceof Optional) {
                 Optional<?> optional = (Optional<?>) value;
                 if (optional.isPresent()) {
                     properties.put(key, JsonValues.valueOf(optional.get()));
