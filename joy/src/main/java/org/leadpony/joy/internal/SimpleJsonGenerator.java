@@ -28,7 +28,6 @@ import java.util.Map;
 
 import javax.json.JsonArray;
 import javax.json.JsonException;
-import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
@@ -257,7 +256,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             appendValue(((JsonString) value).getString());
             break;
         case NUMBER:
-            append(((JsonNumber) value).toString());
+            append(value.toString());
             break;
         case TRUE:
             append("true");
