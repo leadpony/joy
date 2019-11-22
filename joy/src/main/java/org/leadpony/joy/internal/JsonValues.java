@@ -110,6 +110,10 @@ final class JsonValues {
             @SuppressWarnings("unchecked")
             Map<String, ?> map = (Map<String, ?>) value;
             return new JsonObjectBuilderImpl(map).build();
+        } else if (value instanceof JsonArrayBuilder) {
+            return ((JsonArrayBuilder) value).build();
+        } else if (value instanceof JsonObjectBuilder) {
+            return ((JsonObjectBuilder) value).build();
         }
         throw new IllegalArgumentException(
             Message.JSON_VALUE_UNSUPPORTED_TYPE.with(value.getClass().getName()));
