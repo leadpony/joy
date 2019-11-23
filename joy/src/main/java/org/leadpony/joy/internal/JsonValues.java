@@ -20,7 +20,9 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonNumber;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
