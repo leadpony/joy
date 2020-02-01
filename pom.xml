@@ -7,7 +7,7 @@
 
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy-parent</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
     <packaging>pom</packaging>
     <name>org.leadpony.joy-parent</name>
 

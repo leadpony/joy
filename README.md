@@ -2,7 +2,7 @@
 
 [![Apache 2.0 License](https://img.shields.io/:license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/org.leadpony.joy/joy.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.leadpony.joy%22%20AND%20a:%22joy%22)
-[![Javadocs](https://www.javadoc.io/badge/jakarta.json/jakarta.json-api.svg)](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api)
+[![Javadocs](https://www.javadoc.io/badge/jakarta.json/jakarta.json-api.svg)](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.6/index.html)
 [![Build Status](https://travis-ci.org/leadpony/joy.svg?branch=master)](https://travis-ci.org/leadpony/joy)
 
 Joy is a fast and robust JSON parser implementing Java API for JSON Processing (JSR 374).
@@ -34,7 +34,7 @@ Next, add this software as an implementation of the API.
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <scope>runtime</scope>
 </dependency>
 ```
@@ -80,7 +80,7 @@ There are other implementations compatible with this software.
 * [Apache Johnzon]
 
 ## Copyright Notice
-Copyright &copy; 2019 the Joy Authors. This software is licensed under [Apache License, Versions 2.0][Apache 2.0 License].
+Copyright &copy; 2019-2020 the Joy Authors. This software is licensed under [Apache License, Versions 2.0][Apache 2.0 License].
 
 [Apache 2.0 License]: https://www.apache.org/licenses/LICENSE-2.0
 [Java API for JSON Processing (JSR 374)]: https://eclipse-ee4j.github.io/jsonp/
