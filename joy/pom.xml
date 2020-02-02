@@ -39,8 +39,8 @@
                             </offlineLink>
                             <offlineLink>
                                 <!-- Notice: Javadoc for java.json module should be fixed with JDK 11. -->
-                                <url>https://static.javadoc.io/jakarta.json/jakarta.json-api/1.1.5</url>
-                                <location>${basedir}/src/main/javadoc/java.json/</location>
+                                <url>https://static.javadoc.io/jakarta.json/jakarta.json-api/2.0.0-RC1</url>
+                                <location>${basedir}/src/main/javadoc/jakarta.json/</location>
                             </offlineLink>
                         </offlineLinks>
                     </configuration>

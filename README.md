@@ -5,13 +5,13 @@
 [![Javadocs](https://www.javadoc.io/badge/jakarta.json/jakarta.json-api.svg)](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.6/index.html)
 [![Build Status](https://travis-ci.org/leadpony/joy.svg?branch=master)](https://travis-ci.org/leadpony/joy)
 
-Joy is a fast and robust JSON parser implementing Java API for JSON Processing (JSR 374).
+Joy is a fast and robust implementation of [Jakarta JSON Processing API] (JSON-P).
 
 ## Key Features
 
-* Fully compliant with version 1.1 of [Java API for JSON Processing (JSR 374)].
+* Fully compliant with the latest specification of [Jakarta JSON Processing API].
 * Passes more than 2,000 tests provided by [JSON-P Test Suite].
-* Works well with [Java API for JSON Binding (JSR 367)].
+* Works perfect with [Jakarta JSON Binding] (JSON-B).
 * Supports Java 8 and higher.
 * Can be used as a modular jar in Java 9 and higher.
 * Developed from scratch to produce cleaner code.
@@ -80,11 +80,22 @@ There are other implementations compatible with this software.
 * [Apache Johnzon]
 
 ## Copyright Notice
-Copyright &copy; 2019-2020 the Joy Authors. This software is licensed under [Apache License, Versions 2.0][Apache 2.0 License].
+Copyright 2019-2020 the original author or authors. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this product except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 [Apache 2.0 License]: https://www.apache.org/licenses/LICENSE-2.0
-[Java API for JSON Processing (JSR 374)]: https://eclipse-ee4j.github.io/jsonp/
-[Java API for JSON Binding (JSR 367)]: http://json-b.net/
+[Jakarta JSON Processing API]: https://eclipse-ee4j.github.io/jsonp/
+[Jakarta JSON Binding]: http://json-b.net/
 [JSON-P Test Suite]: https://github.com/leadpony/jsonp-test-suite
 [JSON-P API Reference in Javadoc]: https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.5
 [Joy API Reference in Javadoc]: https://javadoc.io/doc/org.leadpony.joy/joy
