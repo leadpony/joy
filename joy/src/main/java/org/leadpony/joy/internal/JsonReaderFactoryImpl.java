@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the Joy Authors.
+ * Copyright 2019-2020 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import javax.json.JsonReader;
-import javax.json.JsonReaderFactory;
-import javax.json.stream.JsonParser;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonReaderFactory;
+import jakarta.json.stream.JsonParser;
 
 /**
  * An implementation of {@link JsonReaderFactory}.

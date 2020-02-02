@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the Joy Authors.
+ * Copyright 2019-2020 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.json.stream.JsonParser.Event;
+import jakarta.json.stream.JsonParser.Event;
 
 /**
  * @author leadpony

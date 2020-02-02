@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the Joy Authors.
+ * Copyright 2019-2020 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.leadpony.joy.internal;
 
 import java.math.BigDecimal;
 
-import javax.json.JsonNumber;
+import jakarta.json.JsonNumber;
 
 /**
  * A JSON number which holds an integer.

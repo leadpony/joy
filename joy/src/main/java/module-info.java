@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the Joy Authors.
+ * Copyright 2019-2020 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
  * Defines the implementation of JSON Processing API (JSR 374).
  */
 module org.leadpony.joy {
-    requires transitive java.json;
+    requires transitive jakarta.json;
 
     exports org.leadpony.joy.api;
 
-    provides javax.json.spi.JsonProvider
+    provides jakarta.json.spi.JsonProvider
         with org.leadpony.joy.internal.JsonProviderImpl;
 }
