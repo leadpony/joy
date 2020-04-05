@@ -24,7 +24,7 @@ First, add the JSON-P API as a dependency to your `pom.xml`.
 <dependency>
     <groupId>jakarta.json</groupId>
     <artifactId>jakarta.json-api</artifactId>
-    <version>1.1.6</version>
+    <version>2.0.0-RC2</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ Next, add this software as an implementation of the API.
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy</artifactId>
-    <version>1.3.0</version>
+    <version>2.0.0-RC1</version>
     <scope>runtime</scope>
 </dependency>
 ```
