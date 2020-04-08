@@ -11,9 +11,9 @@
         <version>2.0.0-RC1</version>
     </parent>
 
-    <artifactId>joy</artifactId>
+    <artifactId>joy-classic</artifactId>
     <packaging>jar</packaging>
-    <name>org.leadpony.joy</name>
+    <name>org.leadpony.joy.classic</name>
 
     <dependencies>
         <dependency>

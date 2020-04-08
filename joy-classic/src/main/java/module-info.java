@@ -16,7 +16,7 @@
 /**
  * Defines the implementation of JSON Processing API (JSR 374).
  */
-module org.leadpony.joy {
+module org.leadpony.joy.classic {
     requires transitive jakarta.json;
 
     exports org.leadpony.joy.api;

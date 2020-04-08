@@ -9,14 +9,14 @@
     <artifactId>joy-parent</artifactId>
     <version>2.0.0-RC1</version>
     <packaging>pom</packaging>
-    <name>org.leadpony.joy-parent</name>
+    <name>org.leadpony.joy.parent</name>
 
     <description>
     Joy is yet another implementation of the JSON Processing API (JSR 374).
     </description>
 
     <modules>
-        <module>joy</module>
+        <module>joy-classic</module>
         <module>joy-tests</module>
     </modules>
 
@@ -33,7 +33,7 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -166,7 +166,7 @@
             </plugins>
         </pluginManagement>
     </build>
-    
+
     <profiles>
         <profile>
             <id>release</id>

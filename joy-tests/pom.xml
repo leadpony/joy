@@ -13,7 +13,7 @@
 
     <artifactId>joy-tests</artifactId>
     <packaging>jar</packaging>
-    <name>org.leadpony.joy-tests</name>
+    <name>org.leadpony.joy.tests</name>
 
     <dependencies>
         <dependency>
@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>joy</artifactId>
+            <artifactId>joy-classic</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -72,7 +72,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>release</id>
