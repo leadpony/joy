@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 /**
- * Defines the provider of Jakarta JSON Processing API (JSON-P).
+ * Defines the groundwork for implementations of Jakarta JSON Processing API (JSON-P).
  */
-module org.leadpony.joy.classic {
-    requires org.leadpony.joy.core;
-
-    provides jakarta.json.spi.JsonProvider
-        with org.leadpony.joy.classic.ClassicJsonProvider;
+module org.leadpony.joy.core {
+    requires transitive jakarta.json;
+    exports org.leadpony.joy.api;
+    exports org.leadpony.joy.core to org.leadpony.joy.classic;
 }

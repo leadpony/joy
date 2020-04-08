@@ -11,15 +11,14 @@
         <version>2.0.0-RC1</version>
     </parent>
 
-    <artifactId>joy-classic</artifactId>
+    <artifactId>joy-core</artifactId>
     <packaging>jar</packaging>
-    <name>org.leadpony.joy.classic</name>
+    <name>org.leadpony.joy.core</name>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>joy-core</artifactId>
-            <version>${project.version}</version>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
         </dependency>
     </dependencies>
 
@@ -31,6 +30,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.1.0</version>
                     <configuration>
+                        <excludePackageNames>org.leadpony.joy.core</excludePackageNames>
                         <detectJavaApiLink>false</detectJavaApiLink>
                         <offlineLinks>
                             <offlineLink>
@@ -58,7 +58,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.leadpony.joy.classic</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.leadpony.joy.core</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

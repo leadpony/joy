@@ -17,6 +17,7 @@
 
     <modules>
         <module>joy-classic</module>
+        <module>joy-core</module>
         <module>joy-tests</module>
     </modules>
 

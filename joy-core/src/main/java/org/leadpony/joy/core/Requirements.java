@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the Joy Authors.
+ * Copyright 2019 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Defines the provider of Jakarta JSON Processing API (JSON-P).
- */
-module org.leadpony.joy.classic {
-    requires org.leadpony.joy.core;
+package org.leadpony.joy.core;
 
-    provides jakarta.json.spi.JsonProvider
-        with org.leadpony.joy.classic.ClassicJsonProvider;
+/**
+ * @author leadpony
+ */
+final class Requirements {
+
+    static void requireNonNull(Object arg, String name) {
+        if (arg == null) {
+            throw new NullPointerException(name + " must not be null.");
+        }
+    }
+
+    static void requireFiniteNumber(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            throw new NumberFormatException("value must be a finite number.");
+        }
+    }
+
+    private Requirements() {
+    }
 }

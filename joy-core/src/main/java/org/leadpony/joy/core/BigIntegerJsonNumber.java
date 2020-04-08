@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the Joy Authors.
+ * Copyright 2019 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Defines the provider of Jakarta JSON Processing API (JSON-P).
- */
-module org.leadpony.joy.classic {
-    requires org.leadpony.joy.core;
+package org.leadpony.joy.core;
 
-    provides jakarta.json.spi.JsonProvider
-        with org.leadpony.joy.classic.ClassicJsonProvider;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+/**
+ * A JSON number holding {@code BigInteger}.
+ *
+ * @author leadpony
+ */
+class BigIntegerJsonNumber extends BigDecimalJsonNumber {
+
+    BigIntegerJsonNumber(BigInteger value) {
+        super(new BigDecimal(value));
+    }
+
+    @Override
+    public boolean isIntegral() {
+        return true;
+    }
 }

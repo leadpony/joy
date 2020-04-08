@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the Joy Authors.
+ * Copyright 2019 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 /**
- * Defines the provider of Jakarta JSON Processing API (JSON-P).
+ * Provides an implementation of Java API for JSON Processing (JSR 374).
+ *
+ * @author leadpony
  */
-module org.leadpony.joy.classic {
-    requires org.leadpony.joy.core;
-
-    provides jakarta.json.spi.JsonProvider
-        with org.leadpony.joy.classic.ClassicJsonProvider;
-}
+package org.leadpony.joy.core;
