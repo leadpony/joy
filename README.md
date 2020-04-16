@@ -66,7 +66,7 @@ The following configuration properties are added.
 
 ## Building from Source
 
-JDK 9 and [Maven] are tools required to build this software. The following command builds and install it into your local Maven repository.
+JDK 14 and [Maven] are the tools required to build this software. The following command builds and install it into your local Maven repository.
 
 ```bash
 mvn clean install -P release
