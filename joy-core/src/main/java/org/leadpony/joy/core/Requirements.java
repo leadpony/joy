@@ -18,15 +18,15 @@ package org.leadpony.joy.core;
 /**
  * @author leadpony
  */
-final class Requirements {
+public final class Requirements {
 
-    static void requireNonNull(Object arg, String name) {
+    public static void requireNonNull(Object arg, String name) {
         if (arg == null) {
             throw new NullPointerException(name + " must not be null.");
         }
     }
 
-    static void requireFiniteNumber(double value) {
+    public static void requireFiniteNumber(double value) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             throw new NumberFormatException("value must be a finite number.");
         }

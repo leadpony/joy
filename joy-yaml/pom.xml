@@ -11,15 +11,20 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>joy-classic</artifactId>
+    <artifactId>joy-yaml</artifactId>
     <packaging>jar</packaging>
-    <name>org.leadpony.joy.classic</name>
+    <name>org.leadpony.joy.yaml</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>joy-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.snakeyaml</groupId>
+            <artifactId>snakeyaml-engine</artifactId>
+            <version>2.1</version>
         </dependency>
     </dependencies>
 

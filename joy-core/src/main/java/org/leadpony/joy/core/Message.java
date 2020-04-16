@@ -23,7 +23,7 @@ import jakarta.json.stream.JsonLocation;
 /**
  * @author leadpony
  */
-enum Message {
+public enum Message {
     PARSER_ILLEGAL_STATE,
     PARSER_UNEXPECTED_CHAR,
     PARSER_UNEXPECTED_CHAR_FOR,

@@ -24,9 +24,9 @@ import java.util.Map;
  *
  * @author leadpony
  */
-class ConfigurableFactory {
+public class ConfigurableFactory {
 
-    static final String[] NO_SUPPORTED_PROPERTIES = {};
+    public static final String[] NO_SUPPORTED_PROPERTIES = {};
 
     private final Map<String, Object> properties;
 
@@ -54,12 +54,12 @@ class ConfigurableFactory {
         return properties;
     }
 
-    final boolean containsProperty(String key) {
+    public final boolean containsProperty(String key) {
         return properties.containsKey(key);
     }
 
     @SuppressWarnings("unchecked")
-    final <T> T getPropertyValue(String key, T defaultValue) {
+    public final <T> T getPropertyValue(String key, T defaultValue) {
         Object value = properties.get(key);
         if (defaultValue.getClass().isInstance(value)) {
             return (T) value;

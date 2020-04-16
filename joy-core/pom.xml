@@ -80,6 +80,9 @@
                                 <goals>
                                     <goal>compile</goal>
                                 </goals>
+                                <configuration>
+                                    <release>9</release>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>base-compile</id>
@@ -87,7 +90,6 @@
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <release>8</release>
                                     <excludes>
                                         <exclude>module-info.java</exclude>
                                     </excludes>

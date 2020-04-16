@@ -261,7 +261,7 @@ public abstract class AbstractJsonProvider extends JsonProvider implements Input
         return JsonValues.valueOf(value);
     }
 
-    private static Map<String, ?> getConfigOrEmpty(Map<String, ?> config) {
+    protected static Map<String, ?> getConfigOrEmpty(Map<String, ?> config) {
         if (config == null) {
             return Collections.emptyMap();
         } else {

@@ -39,12 +39,14 @@ import jakarta.json.stream.JsonParsingException;
  *
  * @author leadpony
  */
-class BasicJsonParser extends AbstractJsonParser {
+class BasicJsonParser implements DefaultJsonParser {
 
     private final Reader reader;
     private boolean alreadyClosed;
 
     private final CharBufferFactory bufferFactory;
+
+    private Event currentEvent;
 
     // Current state. This never be {@code null}.
     private State state;
@@ -110,7 +112,7 @@ class BasicJsonParser extends AbstractJsonParser {
         this.location = null;
         int c = peekNonSpaceChar();
         Event event = state.process(c, this);
-        setCurrentEvent(event);
+        this.currentEvent = event;
         return event;
     }
 
@@ -235,15 +237,20 @@ class BasicJsonParser extends AbstractJsonParser {
         }
     }
 
-    /* As a AbstractJsonParser */
+    /* As a DefaultJsonParser */
 
     @Override
-    boolean isInCollection() {
+    public final Event getCurrentEvent() {
+        return currentEvent;
+    }
+
+    @Override
+    public boolean isInCollection() {
         return !this.stateStack.isEmpty();
     }
 
     @Override
-    boolean isInArray() {
+    public boolean isInArray() {
         Event event = getCurrentEvent();
         if (event == Event.START_ARRAY || event == Event.END_ARRAY) {
             return true;
@@ -255,7 +262,7 @@ class BasicJsonParser extends AbstractJsonParser {
     }
 
     @Override
-    boolean isInObject() {
+    public boolean isInObject() {
         Event event = getCurrentEvent();
         if (event == Event.START_OBJECT || event == Event.END_OBJECT) {
             return true;

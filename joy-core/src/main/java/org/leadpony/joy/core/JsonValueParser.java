@@ -34,7 +34,7 @@ import jakarta.json.stream.JsonLocation;
  *
  * @author leadpony
  */
-class JsonValueParser extends AbstractJsonParser {
+class JsonValueParser implements DefaultJsonParser {
 
     private static final Scope GLOBAL_SCOPE = new GlobalScope();
     private Scope scope;
@@ -52,6 +52,8 @@ class JsonValueParser extends AbstractJsonParser {
         VALUE_EVENTS[ValueType.NULL.ordinal()] = Event.VALUE_NULL;
     }
 
+    private Event currentEvent;
+
     JsonValueParser(JsonArray value) {
         this.scope = new ArrayScope(value);
     }
@@ -68,7 +70,7 @@ class JsonValueParser extends AbstractJsonParser {
     @Override
     public Event next() {
         Event event = scope.getEvent(this);
-        setCurrentEvent(event);
+        this.currentEvent = event;
         return event;
     }
 
@@ -178,15 +180,20 @@ class JsonValueParser extends AbstractJsonParser {
         return array;
     }
 
-    /* As a AbstractJsonParser */
+    /* As a DefaultJsonParser */
 
     @Override
-    boolean isInCollection() {
+    public final Event getCurrentEvent() {
+        return currentEvent;
+    }
+
+    @Override
+    public boolean isInCollection() {
         return getCurrentEvent() != null;
     }
 
     @Override
-    boolean isInArray() {
+    public boolean isInArray() {
         Event event = getCurrentEvent();
         if (event == Event.START_ARRAY || event == Event.END_ARRAY) {
             return true;
@@ -200,7 +207,7 @@ class JsonValueParser extends AbstractJsonParser {
     }
 
     @Override
-    boolean isInObject() {
+    public boolean isInObject() {
         Event event = getCurrentEvent();
         if (event == Event.START_OBJECT || event == Event.END_OBJECT) {
             return true;
