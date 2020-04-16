@@ -17,8 +17,8 @@
 
     <modules>
         <module>joy-classic</module>
+        <module>joy-classic-tests</module>
         <module>joy-core</module>
-        <module>joy-tests</module>
         <module>joy-yaml</module>
         <module>joy-yaml-tests</module>
     </modules>
