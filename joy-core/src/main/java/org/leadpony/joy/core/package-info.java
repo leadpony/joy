@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Provides an implementation of Java API for JSON Processing (JSR 374).
+ * Provides the groundwork for Jakarta JSON Processing API (JSON-P).
  *
  * @author leadpony
  */

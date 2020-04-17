@@ -17,17 +17,36 @@
 package org.leadpony.joy.yaml;
 
 /**
+ * A parsing context.
+ *
  * @author leadpony
  */
 interface ParserContext {
 
+    /**
+     * Changes the current state.
+     *
+     * @param state the new state.
+     */
     void setState(ParserState state);
 
+    /**
+     * Begins a sequence (array).
+     */
     void beginSequence();
 
+    /**
+     * Ends a sequence (array).
+     */
     void endSequence();
 
+    /**
+     * Begins a mapping (object).
+     */
     void beginMapping();
 
+    /**
+     * Ends a mapping (object).
+     */
     void endMapping();
 }

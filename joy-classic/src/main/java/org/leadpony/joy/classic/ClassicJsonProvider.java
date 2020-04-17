@@ -17,9 +17,18 @@
 package org.leadpony.joy.classic;
 
 import org.leadpony.joy.core.AbstractJsonProvider;
+import jakarta.json.spi.JsonProvider;
 
 /**
+ * A {@link JsonProvider} for producing JSON parsers and generators.
+ *
  * @author leadpony
  */
 public final class ClassicJsonProvider extends AbstractJsonProvider {
+
+    /**
+     * Constructs this provider.
+     */
+    public ClassicJsonProvider() {
+    }
 }

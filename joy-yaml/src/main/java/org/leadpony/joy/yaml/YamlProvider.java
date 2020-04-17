@@ -26,29 +26,44 @@ import org.leadpony.joy.core.AbstractJsonProvider;
 
 import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonParserFactory;
+import jakarta.json.spi.JsonProvider;
 
 /**
+ * A {@link JsonProvider} for producing YAML parsers.
+ *
  * @author leadpony
  */
 public final class YamlProvider extends AbstractJsonProvider {
 
     private YamlParserFactory defaultParserFactory;
 
+    /**
+     * Constructs this provider.
+     */
     public YamlProvider() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JsonParser createParser(Reader reader) {
         requireNonNull(reader, "reader");
         return getDefaultParserFactory().createParser(reader);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JsonParser createParser(InputStream in) {
         requireNonNull(in, "in");
         return getDefaultParserFactory().createParser(in);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JsonParserFactory createParserFactory(Map<String, ?> config) {
         if (config == null || config.isEmpty()) {
@@ -57,6 +72,8 @@ public final class YamlProvider extends AbstractJsonProvider {
             return new YamlParserFactory(config);
         }
     }
+
+    /* helpers */
 
     private JsonParserFactory getDefaultParserFactory() {
         if (defaultParserFactory == null) {

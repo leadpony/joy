@@ -16,20 +16,18 @@
 
 package org.leadpony.joy.yaml.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.api.Nested;
 
 import jakarta.json.Json;
 import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonParserFactory;
-import jakarta.json.stream.JsonParser.Event;
 
 /**
  * @author leadpony
@@ -43,18 +41,33 @@ public class JsonParserFactoryTest {
         factory = Json.createParserFactory(Collections.emptyMap());
     }
 
-    @ParameterizedTest
-    @EnumSource(SimpleYamlTestCase.class)
-    public void createParserShouldCreateParserFromReader(SimpleYamlTestCase test) {
-        StringReader source = new StringReader(test.json);
-        var actual = new ArrayList<Event>();
+    @Nested
+    public class ReaderTest extends AbstractJsonParserTest {
 
-        try (JsonParser parser = factory.createParser(source)) {
-            while (parser.hasNext()) {
-                actual.add(parser.next());
-            }
+        @Override
+        protected JsonParser createParser(String json) {
+            return factory.createParser(new StringReader(json));
         }
+    }
 
-        assertThat(actual).containsExactly(test.events);
+    @Nested
+    public class InputStreamTest extends AbstractJsonParserTest {
+
+        @Override
+        protected JsonParser createParser(String json) {
+            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+            return factory.createParser(new ByteArrayInputStream(bytes));
+        }
+    }
+
+    @Nested
+    public class InputStreamAndCharsetTest extends AbstractJsonParserTest {
+
+        @Override
+        protected JsonParser createParser(String json) {
+            Charset charset = StandardCharsets.UTF_8;
+            byte[] bytes = json.getBytes(charset);
+            return factory.createParser(new ByteArrayInputStream(bytes), charset);
+        }
     }
 }

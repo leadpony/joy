@@ -31,7 +31,7 @@ import jakarta.json.stream.JsonParserFactory;
  *
  * @author leadpony
  */
-class JsonParserFactoryImpl extends AbstractJsonParserFactory implements InputStreamReaderFactory {
+class JsonParserFactoryImpl extends AbstractJsonParserFactory {
 
     private final CharBufferFactory bufferFactory;
 

@@ -24,9 +24,11 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.leadpony.joy.core.BasicJsonLocation;
 import org.leadpony.joy.core.DefaultJsonParser;
 import org.leadpony.joy.core.Message;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 
 import jakarta.json.stream.JsonLocation;
 import jakarta.json.stream.JsonParser;
@@ -58,6 +60,8 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
     private org.snakeyaml.engine.v2.events.Event yamlEvent;
     private EventType eventType;
 
+    private JsonLocation location = BasicJsonLocation.INITIAL;
+
     YamlParser(Iterator<org.snakeyaml.engine.v2.events.Event> iterator, Closeable closeable) {
         this.iterator = iterator;
         this.closeable = closeable;
@@ -81,6 +85,7 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
     @Override
     public Event next() {
         if (hasNext()) {
+            clearLocation();
             this.yamlEvent = this.nextYamlEvent;
             this.nextYamlEvent = null;
             this.eventType = state.processEvent(yamlEvent, this);
@@ -96,7 +101,7 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
         if (event != Event.KEY_NAME && event != Event.VALUE_STRING && event != Event.VALUE_NUMBER) {
             throw newIllegalStateException("getString()");
         }
-        return ((ScalarEvent) yamlEvent).getValue();
+        return getCurrentValue();
     }
 
     @Override
@@ -104,8 +109,7 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
             throw newIllegalStateException("isIntegralNumber()");
         }
-        // TODO Auto-generated method stub
-        return false;
+        return eventType == EventType.INTEGER;
     }
 
     @Override
@@ -113,8 +117,13 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
             throw newIllegalStateException("getInt()");
         }
-        // TODO Auto-generated method stub
-        return 0;
+
+        String value = getCurrentValue();
+        if (eventType == EventType.INTEGER && canRetrieveStrictInt(value)) {
+            return Integer.parseInt(value);
+        } else {
+            return new BigDecimal(value).intValue();
+        }
     }
 
     @Override
@@ -122,8 +131,13 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
             throw newIllegalStateException("getLong()");
         }
-        // TODO Auto-generated method stub
-        return 0;
+
+        String value = getCurrentValue();
+        if (eventType == EventType.INTEGER && canRetrieveStrictLong(value)) {
+            return Long.parseLong(value);
+        } else {
+            return new BigDecimal(value).longValue();
+        }
     }
 
     @Override
@@ -131,14 +145,17 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
         if (getCurrentEvent() != Event.VALUE_NUMBER) {
             throw newIllegalStateException("getBigDecimal()");
         }
-        // TODO Auto-generated method stub
-        return null;
+        return new BigDecimal(getCurrentValue());
     }
 
     @Override
     public JsonLocation getLocation() {
-        // TODO Auto-generated method stub
-        return null;
+        if (location == null) {
+            location = yamlEvent.getEndMark()
+                    .map(YamlParser::markToLocation)
+                    .orElse(BasicJsonLocation.UNKNOWN);
+        }
+        return location;
     }
 
     @Override
@@ -204,5 +221,55 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
     public void endMapping() {
         this.state = stateStack.removeLast();
         --mappingDepth;
+    }
+
+    /* helpers */
+
+    private String getCurrentValue() {
+        return ((ScalarEvent) this.yamlEvent).getValue();
+    }
+
+    private boolean canRetrieveStrictInt(String value) {
+        final int length = value.length();
+        if (value.startsWith("-")) {
+            if (length < 11) {
+                return true;
+            } else if (length == 11) {
+                return value.compareTo(MIN_INT_AS_STRING) <= 0;
+            }
+        } else {
+            if (length < 10) {
+                return true;
+            } else if (length == 10) {
+                return value.compareTo(MAX_INT_AS_STRING) <= 0;
+            }
+        }
+        return false;
+    }
+
+    private boolean canRetrieveStrictLong(String value) {
+        final int length = value.length();
+        if (value.startsWith("-")) {
+            if (length < 20) {
+                return true;
+            } else if (length == 20) {
+                return value.compareTo(MIN_LONG_AS_STRING) <= 0;
+            }
+        } else {
+            if (length < 19) {
+                return true;
+            } else if (length == 19) {
+                return value.compareTo(MAX_LONG_AS_STRING) <= 0;
+            }
+        }
+        return false;
+    }
+
+    private void clearLocation() {
+        this.location = null;
+    }
+
+    private static JsonLocation markToLocation(Mark mark) {
+        return new BasicJsonLocation(mark.getLine(), mark.getColumn(), mark.getIndex());
     }
 }

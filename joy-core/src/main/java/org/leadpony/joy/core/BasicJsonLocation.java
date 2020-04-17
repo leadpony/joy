@@ -20,22 +20,22 @@ import jakarta.json.stream.JsonLocation;
 /**
  * @author leadpony
  */
-class JsonLocationImpl implements JsonLocation {
+public class BasicJsonLocation implements JsonLocation {
 
     /**
      * Initial location.
      */
-    static final JsonLocation INITIAL = new JsonLocationImpl(1, 1, 0);
+    public static final JsonLocation INITIAL = new BasicJsonLocation(1, 1, 0);
     /**
      * Unknown location.
      */
-    static final JsonLocation UNKNOWN = new JsonLocationImpl(-1, -1, -1);
+    public static final JsonLocation UNKNOWN = new BasicJsonLocation(-1, -1, -1);
 
     private final long lineNumber;
     private final long columnNumber;
     private final long streamOffset;
 
-    JsonLocationImpl(long lineNumber, long columnNumber, long streamOffset) {
+    public BasicJsonLocation(long lineNumber, long columnNumber, long streamOffset) {
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.streamOffset = streamOffset;

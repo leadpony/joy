@@ -15,6 +15,8 @@
  */
 
 /**
+ * Provides a basic JSON service provider.
+ *
  * @author leadpony
  */
 package org.leadpony.joy.classic;

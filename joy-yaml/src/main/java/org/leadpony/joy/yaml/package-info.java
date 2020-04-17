@@ -15,6 +15,8 @@
  */
 
 /**
+ * Provides a YAML service provider.
+ *
  * @author leadpony
  */
 package org.leadpony.joy.yaml;

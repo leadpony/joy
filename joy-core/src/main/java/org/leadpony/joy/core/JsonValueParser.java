@@ -131,7 +131,7 @@ class JsonValueParser implements DefaultJsonParser {
 
     @Override
     public JsonLocation getLocation() {
-        return JsonLocationImpl.UNKNOWN;
+        return BasicJsonLocation.UNKNOWN;
     }
 
     @Override

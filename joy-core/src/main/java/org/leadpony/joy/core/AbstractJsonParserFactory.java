@@ -18,6 +18,8 @@ package org.leadpony.joy.core;
 
 import static org.leadpony.joy.core.Requirements.requireNonNull;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Map;
 
 import jakarta.json.JsonArray;
@@ -50,5 +52,9 @@ public abstract class AbstractJsonParserFactory extends ConfigurableFactory impl
     public JsonParser createParser(JsonArray array) {
         requireNonNull(array, "array");
         return new JsonValueParser(array);
+    }
+
+    protected Reader createStreamReader(InputStream in) {
+        return StreamReaders.createStreamReader(in);
     }
 }

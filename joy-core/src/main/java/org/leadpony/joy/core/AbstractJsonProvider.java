@@ -53,11 +53,11 @@ import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonParserFactory;
 
 /**
- * The implementation of {@link JsonProvider}.
+ * A skeletal implementation of {@link JsonProvider}.
  *
  * @author leadpony
  */
-public abstract class AbstractJsonProvider extends JsonProvider implements InputStreamReaderFactory {
+public abstract class AbstractJsonProvider extends JsonProvider {
 
     private final CharBufferFactory bufferFactory = new PooledCharBufferFactory();
 
@@ -267,5 +267,9 @@ public abstract class AbstractJsonProvider extends JsonProvider implements Input
         } else {
             return config;
         }
+    }
+
+    protected static Reader createStreamReader(InputStream in) {
+        return StreamReaders.createStreamReader(in);
     }
 }

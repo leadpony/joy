@@ -79,7 +79,7 @@ class BasicJsonParser implements DefaultJsonParser {
 
     private boolean hasFracOrExp;
 
-    private JsonLocation location = JsonLocationImpl.INITIAL;
+    private JsonLocation location = BasicJsonLocation.INITIAL;
 
     BasicJsonParser(Reader reader, CharBufferFactory bufferFactory) {
         this.reader = reader;
@@ -170,7 +170,7 @@ class BasicJsonParser implements DefaultJsonParser {
     @Override
     public JsonLocation getLocation() {
         if (location == null) {
-            location = new JsonLocationImpl(lineNumber, getColumnNumber(), getStreamOffset());
+            location = new BasicJsonLocation(lineNumber, getColumnNumber(), getStreamOffset());
         }
         return location;
     }
@@ -720,13 +720,13 @@ class BasicJsonParser implements DefaultJsonParser {
             if (length <= 10) {
                 return true;
             } else if (length == 11) {
-                return buildString().compareTo("-2147483648") <= 0;
+                return buildString().compareTo(MIN_INT_AS_STRING) <= 0;
             }
         } else {
             if (length <= 9) {
                 return true;
             } else if (length == 10) {
-                return buildString().compareTo("2147483647") <= 0;
+                return buildString().compareTo(MAX_INT_AS_STRING) <= 0;
             }
         }
         return false;
@@ -741,13 +741,13 @@ class BasicJsonParser implements DefaultJsonParser {
             if (length <= 19) {
                 return true;
             } else if (length == 20) {
-                return buildString().compareTo("-9223372036854775808") <= 0;
+                return buildString().compareTo(MIN_LONG_AS_STRING) <= 0;
             }
         } else {
             if (length <= 18) {
                 return true;
             } else if (length == 19) {
-                return buildString().compareTo("9223372036854775807") <= 0;
+                return buildString().compareTo(MAX_LONG_AS_STRING) <= 0;
             }
         }
         return false;

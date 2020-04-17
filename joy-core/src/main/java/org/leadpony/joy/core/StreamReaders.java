@@ -34,22 +34,22 @@ import jakarta.json.JsonException;
  *
  * @author leadpony
  */
-interface InputStreamReaderFactory {
+final class StreamReaders {
 
     /**
      * UTF-32 Big Endian.
      */
-    Charset UTF_32BE = Charset.forName("UTF-32BE");
+    private static final Charset UTF_32BE = Charset.forName("UTF-32BE");
 
     /**
      * UTF-32 Little Endian.
      */
-    Charset UTF_32LE = Charset.forName("UTF-32LE");
+    private static final Charset UTF_32LE = Charset.forName("UTF-32LE");
 
     /**
      * The default character encoding.
      */
-    Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
+    private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     /**
      * Creates a reader which will read from the specified input stream. The The
@@ -61,7 +61,7 @@ interface InputStreamReaderFactory {
      *
      * @see <a href="https://www.ietf.org/rfc/rfc4627.txt">RFC 4627</a>
      */
-    default Reader createStreamReader(InputStream in) {
+    static Reader createStreamReader(InputStream in) {
         try {
             int b1 = in.read();
             if (b1 < 0) {
@@ -144,13 +144,16 @@ interface InputStreamReaderFactory {
         }
     }
 
-    static Reader createReader(InputStream in, Charset charset) {
+    private static Reader createReader(InputStream in, Charset charset) {
         return new InputStreamReader(in, charset);
     }
 
-    static Reader createReader(InputStream in, Charset charset, byte... bytes) throws IOException {
+    private static Reader createReader(InputStream in, Charset charset, byte... bytes) throws IOException {
         PushbackInputStream s = new PushbackInputStream(in, bytes.length);
         s.unread(bytes);
         return new InputStreamReader(s, charset);
+    }
+
+    private StreamReaders() {
     }
 }

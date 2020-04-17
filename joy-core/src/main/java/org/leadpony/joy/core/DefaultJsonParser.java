@@ -34,6 +34,12 @@ import jakarta.json.stream.JsonParsingException;
  */
 public interface DefaultJsonParser extends JsonParser {
 
+    String MAX_INT_AS_STRING = "2147483647";
+    String MIN_INT_AS_STRING = "-2147483648";
+
+    String MAX_LONG_AS_STRING = "9223372036854775807";
+    String MIN_LONG_AS_STRING = "-9223372036854775808";
+
     @Override
     default void close() {
     }

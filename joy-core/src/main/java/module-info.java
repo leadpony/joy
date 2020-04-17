@@ -19,7 +19,5 @@
 module org.leadpony.joy.core {
     requires transitive jakarta.json;
     exports org.leadpony.joy.api;
-    exports org.leadpony.joy.core to
-        org.leadpony.joy.classic,
-        org.leadpony.joy.yaml;
+    exports org.leadpony.joy.core;
 }

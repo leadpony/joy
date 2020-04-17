@@ -16,35 +16,30 @@
 
 package org.leadpony.joy.yaml.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import java.nio.charset.StandardCharsets;
 
 import jakarta.json.Json;
 import jakarta.json.stream.JsonParser;
-import jakarta.json.stream.JsonParser.Event;
 
 /**
  * @author leadpony
  */
 public class JsonParserTest {
 
-    @ParameterizedTest
-    @EnumSource(SimpleYamlTestCase.class)
-    public void nextShouldReturnsExpectedEventsFromReader(SimpleYamlTestCase test) {
-        StringReader source = new StringReader(test.json);
-        var actual = new ArrayList<Event>();
-
-        try (JsonParser parser = Json.createParser(source)) {
-            while (parser.hasNext()) {
-                actual.add(parser.next());
-            }
+    public static class ReaderTest extends AbstractJsonParserTest {
+        @Override
+        protected JsonParser createParser(String json) {
+            return Json.createParser(new StringReader(json));
         }
+    }
 
-        assertThat(actual).containsExactly(test.events);
+    public static class StreamTest extends AbstractJsonParserTest {
+        @Override
+        protected JsonParser createParser(String json) {
+            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+            return Json.createParser(new ByteArrayInputStream(bytes));
+        }
     }
 }

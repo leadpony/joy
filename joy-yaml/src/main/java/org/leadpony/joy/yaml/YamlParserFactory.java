@@ -19,6 +19,7 @@ package org.leadpony.joy.yaml;
 import static org.leadpony.joy.core.Requirements.requireNonNull;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -51,23 +52,21 @@ final class YamlParserFactory extends AbstractJsonParserFactory {
     @Override
     public JsonParser createParser(Reader reader) {
         requireNonNull(reader, "reader");
-        Iterator<Event> iterator = parse.parseReader(reader).iterator();
-        return new YamlParser(iterator, reader);
+        return createYamlParser(reader);
     }
 
     @Override
     public JsonParser createParser(InputStream in) {
         requireNonNull(in, "in");
-        // TODO Auto-generated method stub
-        return null;
+        return createYamlParser(createStreamReader(in));
     }
 
     @Override
     public JsonParser createParser(InputStream in, Charset charset) {
         requireNonNull(in, "in");
         requireNonNull(charset, "charset");
-        // TODO Auto-generated method stub
-        return null;
+        Reader reader = new InputStreamReader(in, charset);
+        return createYamlParser(reader);
     }
 
     /* helpers */
@@ -77,4 +76,8 @@ final class YamlParserFactory extends AbstractJsonParserFactory {
         return new Parse(settings);
     }
 
+    private YamlParser createYamlParser(Reader reader) {
+        Iterator<Event> iterator = parse.parseReader(reader).iterator();
+        return new YamlParser(iterator, reader);
+    }
 }
