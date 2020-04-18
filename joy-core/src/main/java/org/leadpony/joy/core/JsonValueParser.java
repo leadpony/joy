@@ -34,7 +34,7 @@ import jakarta.json.stream.JsonLocation;
  *
  * @author leadpony
  */
-class JsonValueParser implements DefaultJsonParser {
+class JsonValueParser extends AbstractJsonParser {
 
     private static final Scope GLOBAL_SCOPE = new GlobalScope();
     private Scope scope;

@@ -28,11 +28,19 @@ import jakarta.json.JsonValue;
 import jakarta.json.JsonValue.ValueType;
 
 /**
+ * A utility class operating on instances of {@link JsonValue}.
+ *
  * @author leadpony
  */
-final class JsonValues {
+public final class JsonValues {
 
-    static JsonNumber valueOf(int value) {
+    /**
+     * Creates a JSON number from an integer.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON number.
+     */
+    public static JsonNumber valueOf(int value) {
         if (value == 0) {
             return IntJsonNumber.ZERO;
         } else if (value == 1) {
@@ -42,7 +50,13 @@ final class JsonValues {
         }
     }
 
-    static JsonNumber valueOf(long value) {
+    /**
+     * Creates a JSON number from a long integer.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON number.
+     */
+    public static JsonNumber valueOf(long value) {
         if (value == 0) {
             return IntJsonNumber.ZERO;
         } else if (value == 1) {
@@ -52,19 +66,43 @@ final class JsonValues {
         }
     }
 
-    static JsonNumber valueOf(double value) {
+    /**
+     * Creates a JSON number from a floating point number.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON number.
+     */
+    public static JsonNumber valueOf(double value) {
         return new BigDecimalJsonNumber(BigDecimal.valueOf(value));
     }
 
-    static JsonNumber valueOf(BigDecimal value) {
+    /**
+     * Creates a JSON number from a BigDecimal.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON number.
+     */
+    public static JsonNumber valueOf(BigDecimal value) {
         return new BigDecimalJsonNumber(value);
     }
 
-    static JsonNumber valueOf(BigInteger value) {
+    /**
+     * Creates a JSON number from a BigInteger.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON number.
+     */
+    public static JsonNumber valueOf(BigInteger value) {
         return new BigIntegerJsonNumber(value);
     }
 
-    static JsonString valueOf(String value) {
+    /**
+     * Creates a JSON string from a Java string.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON string.
+     */
+    public static JsonString valueOf(String value) {
         if (value.isEmpty()) {
             return JsonStringImpl.EMPTY;
         } else {
@@ -72,7 +110,15 @@ final class JsonValues {
         }
     }
 
-    static JsonString valueOf(char[] value, int offset, int count) {
+    /**
+     * Creates a JSON string from an array of characters.
+     *
+     * @param value  the array of characters.
+     * @param offset the offset in the array.
+     * @param count  the number of characters.
+     * @return the newly created JSON string.
+     */
+    public static JsonString valueOf(char[] value, int offset, int count) {
         if (count == 0) {
             return JsonStringImpl.EMPTY;
         } else {
@@ -80,11 +126,23 @@ final class JsonValues {
         }
     }
 
-    static JsonValue valueOf(boolean value) {
+    /**
+     * Creates a JSON value from a boolean value.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON value.
+     */
+    public static JsonValue valueOf(boolean value) {
         return value ? JsonValue.TRUE : JsonValue.FALSE;
     }
 
-    static JsonValue valueOf(Object value) {
+    /**
+     * Creates a JSON value from an object.
+     *
+     * @param value the original value from which JSON value will be created.
+     * @return the newly created JSON value.
+     */
+    public static JsonValue valueOf(Object value) {
         if (value == null) {
             return JsonValue.NULL;
         } else if (value instanceof JsonValue) {
@@ -117,11 +175,18 @@ final class JsonValues {
         } else if (value instanceof JsonObjectBuilder) {
             return ((JsonObjectBuilder) value).build();
         }
-        throw new IllegalArgumentException(
-            Message.JSON_VALUE_UNSUPPORTED_TYPE.with(value.getClass().getName()));
+        throw new IllegalArgumentException(Message.JSON_VALUE_UNSUPPORTED_TYPE.with(value.getClass().getName()));
     }
 
-    static boolean isStructure(JsonValue value) {
+    /**
+     * Tests whether the specified JSON value is a JSON structure or not. A JSON
+     * structure is a JSON array or a JSON object.
+     *
+     * @param value the JSON value to be tested.
+     * @return {@code true} if the specified value if a JSON structure,
+     *         {@code false} otherwise.
+     */
+    public static boolean isStructure(JsonValue value) {
         ValueType type = value.getValueType();
         return type == ValueType.ARRAY || type == ValueType.OBJECT;
     }

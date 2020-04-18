@@ -18,6 +18,8 @@ package org.leadpony.joy.core;
 import jakarta.json.stream.JsonLocation;
 
 /**
+ * A basic implementation of {@link JsonLocation}.
+ *
  * @author leadpony
  */
 public class BasicJsonLocation implements JsonLocation {

@@ -19,24 +19,28 @@ package org.leadpony.joy.yaml;
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.leadpony.joy.core.BasicJsonLocation;
-import org.leadpony.joy.core.DefaultJsonParser;
+import org.leadpony.joy.core.JsonValues;
+import org.leadpony.joy.core.AbstractJsonParser;
 import org.leadpony.joy.core.Message;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
 import org.snakeyaml.engine.v2.exceptions.Mark;
 
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonString;
 import jakarta.json.stream.JsonLocation;
 import jakarta.json.stream.JsonParser;
 
 /**
  * @author leadpony
  */
-final class YamlParser implements DefaultJsonParser, ParserContext {
+final class YamlParser extends AbstractJsonParser implements ParserContext {
 
     private final Closeable closeable;
     private boolean alreadyClosed;
@@ -176,18 +180,39 @@ final class YamlParser implements DefaultJsonParser, ParserContext {
     /* As a DefaultJsonParser */
 
     @Override
-    public Event getCurrentEvent() {
+    protected Event getCurrentEvent() {
         return eventType.toJsonEvent();
     }
 
     @Override
-    public boolean isInArray() {
+    protected boolean isInArray() {
         return sequenceDepth > 0;
     }
 
     @Override
-    public boolean isInObject() {
+    protected boolean isInObject() {
         return mappingDepth > 0;
+    }
+
+    @Override
+    protected JsonString getValueAsString() {
+        return JsonValues.valueOf(getCurrentValue());
+    }
+
+    @Override
+    protected JsonNumber getValueAsNumber() {
+        final String value = getCurrentValue();
+        if (isIntegralNumber()) {
+            if (canRetrieveStrictInt(value)) {
+                return JsonValues.valueOf(Integer.parseInt(value));
+            } else if (canRetrieveStrictLong(value)) {
+                return JsonValues.valueOf(Long.parseLong(value));
+            } else {
+                return JsonValues.valueOf(new BigInteger(value));
+            }
+        } else {
+            return JsonValues.valueOf(new BigDecimal(value));
+        }
     }
 
     /* As a ParserContext */

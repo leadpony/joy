@@ -24,13 +24,8 @@ import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import jakarta.json.JsonArray;
-import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonNumber;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonString;
-import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonLocation;
 import jakarta.json.stream.JsonParsingException;
 
@@ -39,7 +34,7 @@ import jakarta.json.stream.JsonParsingException;
  *
  * @author leadpony
  */
-class BasicJsonParser implements DefaultJsonParser {
+class BasicJsonParser extends AbstractJsonParser {
 
     private final Reader reader;
     private boolean alreadyClosed;
@@ -173,51 +168,6 @@ class BasicJsonParser implements DefaultJsonParser {
             location = new BasicJsonLocation(lineNumber, getColumnNumber(), getStreamOffset());
         }
         return location;
-    }
-
-    @Override
-    public JsonValue getValue() {
-        Event event = getCurrentEvent();
-        if (event == null) {
-            throw newIllegalStateException("getValue()");
-        }
-        switch (event) {
-        case VALUE_TRUE:
-            return JsonValue.TRUE;
-        case VALUE_FALSE:
-            return JsonValue.FALSE;
-        case VALUE_NULL:
-            return JsonValue.NULL;
-        case VALUE_STRING:
-        case KEY_NAME:
-            return getValueAsString();
-        case VALUE_NUMBER:
-            return getValueAsNumber();
-        case START_ARRAY:
-            return getValueAsArray();
-        case START_OBJECT:
-            return getValueAsObject();
-        case END_ARRAY:
-        case END_OBJECT:
-        default:
-            throw newIllegalStateException("getValue()");
-        }
-    }
-
-    @Override
-    public JsonArray getArray() {
-        if (getCurrentEvent() != Event.START_ARRAY) {
-            throw newIllegalStateException("getArray()");
-        }
-        return getValueAsArray();
-    }
-
-    @Override
-    public JsonObject getObject() {
-        if (getCurrentEvent() != Event.START_OBJECT) {
-            throw newIllegalStateException("getObject()");
-        }
-        return getValueAsObject();
     }
 
     @Override
@@ -781,11 +731,13 @@ class BasicJsonParser implements DefaultJsonParser {
         return minus ? -value : value;
     }
 
-    private JsonString getValueAsString() {
+    @Override
+    protected JsonString getValueAsString() {
         return JsonValues.valueOf(readBuffer, valueStart, valueEnd - valueStart);
     }
 
-    private JsonNumber getValueAsNumber() {
+    @Override
+    protected JsonNumber getValueAsNumber() {
         if (hasFracOrExp) {
             BigDecimal value = buildBigDecimal();
             return JsonValues.valueOf(value);
@@ -797,46 +749,6 @@ class BasicJsonParser implements DefaultJsonParser {
             BigInteger value = new BigInteger(buildString());
             return JsonValues.valueOf(value);
         }
-    }
-
-    /**
-     * Returns the current value as a JSON array.
-     *
-     * @return the JSON array.
-     */
-    private JsonArray getValueAsArray() {
-        JsonArrayBuilder builder = new JsonArrayBuilderImpl();
-        while (hasNext()) {
-            Event event = next();
-            if (event == Event.END_ARRAY) {
-                return builder.build();
-            }
-            builder.add(getValue());
-        }
-        throw newUnexpectedEndException(ParserEventSet.VALUES_OR_END_ARRAY);
-    }
-
-    /**
-     * Returns the current value as a JSON object.
-     *
-     * @return the JSON object.
-     */
-    private JsonObject getValueAsObject() {
-        JsonObjectBuilder builder = new JsonObjectBuilderImpl();
-        while (hasNext()) {
-            Event event = next();
-            if (event == Event.END_OBJECT) {
-                return builder.build();
-            }
-            String keyName = getString();
-            if (hasNext()) {
-                next();
-                builder.add(keyName, getValue());
-            } else {
-                throw newUnexpectedEndException(':');
-            }
-        }
-        throw newUnexpectedEndException(ParserEventSet.KEY_NAME_OR_END_OBJECT);
     }
 
     void pushState(State state) {
@@ -880,12 +792,6 @@ class BasicJsonParser implements DefaultJsonParser {
     JsonParsingException newUnexpectedEndException() {
         JsonLocation location = getLocation();
         String message = Message.PARSER_UNEXPECTED_EOI.with(location);
-        return new JsonParsingException(message, location);
-    }
-
-    JsonParsingException newUnexpectedEndException(Object expected) {
-        JsonLocation location = getLocation();
-        String message = Message.PARSER_UNEXPECTED_EOI_FOR_CHAR.with(location, expected);
         return new JsonParsingException(message, location);
     }
 
