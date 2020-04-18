@@ -72,7 +72,7 @@ public enum Message {
         return getPattern();
     }
 
-    String with(Object... args) {
+    public String with(Object... args) {
         for (int i = 0; i < args.length; i++) {
             args[i] = stringify(args[i]);
         }

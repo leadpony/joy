@@ -30,7 +30,6 @@ import org.leadpony.joy.core.JsonValues;
 import org.leadpony.joy.core.AbstractJsonParser;
 import org.leadpony.joy.core.Message;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.exceptions.Mark;
 
 import jakarta.json.JsonNumber;
 import jakarta.json.JsonString;
@@ -62,7 +61,7 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
 
     private org.snakeyaml.engine.v2.events.Event nextYamlEvent;
     private org.snakeyaml.engine.v2.events.Event yamlEvent;
-    private EventType eventType;
+    private EventType eventType = EventType.UNKNOWN;
 
     private JsonLocation location = BasicJsonLocation.INITIAL;
 
@@ -155,9 +154,7 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
     @Override
     public JsonLocation getLocation() {
         if (location == null) {
-            location = yamlEvent.getEndMark()
-                    .map(YamlParser::markToLocation)
-                    .orElse(BasicJsonLocation.UNKNOWN);
+            location = JsonLocations.at(yamlEvent.getEndMark());
         }
         return location;
     }
@@ -292,9 +289,5 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
 
     private void clearLocation() {
         this.location = null;
-    }
-
-    private static JsonLocation markToLocation(Mark mark) {
-        return new BasicJsonLocation(mark.getLine(), mark.getColumn(), mark.getIndex());
     }
 }

@@ -27,6 +27,7 @@ import jakarta.json.stream.JsonParser;
  * @author leadpony
  */
 enum EventType {
+    UNKNOWN(null),
     TRUE(JsonParser.Event.VALUE_TRUE),
     FALSE(JsonParser.Event.VALUE_FALSE),
     NULL(JsonParser.Event.VALUE_NULL),

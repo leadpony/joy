@@ -16,7 +16,6 @@
 
 package org.leadpony.joy.core;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
@@ -222,7 +221,7 @@ public abstract class AbstractJsonParser implements JsonParser {
 
     /* provides parsing exceptions */
 
-    protected JsonException newJsonException(Message message, IOException e) {
+    protected JsonException newJsonException(Message message, Exception e) {
         return new JsonException(message.toString(), e);
     }
 

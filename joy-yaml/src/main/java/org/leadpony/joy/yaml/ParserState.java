@@ -17,9 +17,18 @@
 package org.leadpony.joy.yaml;
 
 import java.util.Iterator;
+import java.util.Optional;
 
+import org.leadpony.joy.core.Message;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.exceptions.Mark;
+import org.snakeyaml.engine.v2.exceptions.ParserException;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
+
+import jakarta.json.JsonException;
+import jakarta.json.stream.JsonLocation;
+import jakarta.json.stream.JsonParsingException;
 
 /**
  * @author leadpony
@@ -27,7 +36,7 @@ import org.snakeyaml.engine.v2.events.ScalarEvent;
 enum ParserState {
     INITIAL {
         @Override
-        Event fetchEvent(Iterator<Event> it) {
+        protected Event doFetchEvent(Iterator<Event> it) {
             if (it.hasNext()) {
                 Event event = it.next();
                 requireEvent(event, Event.ID.StreamStart);
@@ -58,9 +67,15 @@ enum ParserState {
 
     FINAL {
         @Override
-        Event fetchEvent(Iterator<Event> it) {
+        protected Event doFetchEvent(Iterator<Event> it) {
             if (it.hasNext()) {
                 requireEvent(it.next(), Event.ID.DocumentEnd);
+                if (it.hasNext()) {
+                    requireEvent(it.next(), Event.ID.StreamEnd);
+                    if (it.hasNext()) {
+                        throw newParsingException(it.next().getStartMark());
+                    }
+                }
             }
             return null;
         }
@@ -109,11 +124,16 @@ enum ParserState {
      * @param it the iterator of YAML events.
      * @return the fetched YAML event or {@code null} if no event was found.
      */
-    Event fetchEvent(Iterator<Event> it) {
-        if (it.hasNext()) {
-            return it.next();
-        } else {
-            return null;
+    final Event fetchEvent(Iterator<Event> it) {
+        try {
+            return doFetchEvent(it);
+        } catch (ParserException e) {
+            throw new JsonParsingException(
+                    e.getMessage(),
+                    e,
+                    JsonLocations.at(e.getProblemMark()));
+        } catch (YamlEngineException e) {
+            throw new JsonException(Message.PARSER_IO_ERROR_WHILE_READING.toString(), e);
         }
     }
 
@@ -138,11 +158,32 @@ enum ParserState {
         }
     }
 
+    protected Event doFetchEvent(Iterator<Event> it) {
+        if (it.hasNext()) {
+            return it.next();
+        } else {
+            return null;
+        }
+    }
+
     protected static Event requireEvent(Event event, Event.ID eventId) {
         if (event.getEventId() != eventId) {
             // TODO
             throw new IllegalStateException();
         }
         return event;
+    }
+
+    protected static JsonParsingException newParsingException(Event event) {
+        return newParsingException(event.getStartMark());
+    }
+
+    protected static JsonParsingException newParsingException(Optional<Mark> mark) {
+        JsonLocation location = JsonLocations.at(mark);
+        int c = mark.map(m -> m.getBuffer()[m.getPointer()]).orElse((int) ' ');
+        StringBuilder sb = new StringBuilder();
+        sb.append("'").append((char) c).append("'");
+        String message = Message.PARSER_UNEXPECTED_CHAR.with(location, sb.toString());
+        return new JsonParsingException(message, location);
     }
 }
