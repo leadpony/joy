@@ -15,8 +15,8 @@
  */
 package org.leadpony.joy.core;
 
-import static org.leadpony.joy.core.Requirements.requireFiniteNumber;
-import static org.leadpony.joy.core.Requirements.requireNonNull;
+import static org.leadpony.joy.core.Preconditions.requireFiniteNumber;
+import static org.leadpony.joy.core.Preconditions.requireNonNull;
 
 import java.io.IOException;
 import java.math.BigDecimal;

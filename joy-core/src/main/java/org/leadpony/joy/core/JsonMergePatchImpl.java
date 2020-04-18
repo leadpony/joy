@@ -15,7 +15,7 @@
  */
 package org.leadpony.joy.core;
 
-import static org.leadpony.joy.core.Requirements.requireNonNull;
+import static org.leadpony.joy.core.Preconditions.requireNonNull;
 
 import java.util.Map;
 

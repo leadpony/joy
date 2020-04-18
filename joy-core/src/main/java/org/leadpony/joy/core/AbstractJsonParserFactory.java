@@ -16,7 +16,7 @@
 
 package org.leadpony.joy.core;
 
-import static org.leadpony.joy.core.Requirements.requireNonNull;
+import static org.leadpony.joy.core.Preconditions.requireNonNull;
 
 import java.io.InputStream;
 import java.io.Reader;

@@ -16,11 +16,11 @@
 package org.leadpony.joy.core;
 
 /**
- * A utility class to check requirements for method parameters.
+ * A utility class that checks preconditions of methods and constructors.
  *
  * @author leadpony
  */
-public final class Requirements {
+public final class Preconditions {
 
     public static void requireNonNull(Object arg, String name) {
         if (arg == null) {
@@ -34,6 +34,6 @@ public final class Requirements {
         }
     }
 
-    private Requirements() {
+    private Preconditions() {
     }
 }
