@@ -73,9 +73,6 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
 
     @Override
     public boolean hasNext() {
-        if (alreadyClosed) {
-            return false;
-        }
         if (!finished && nextYamlEvent == null) {
             nextYamlEvent = state.fetchEvent(iterator);
             if (nextYamlEvent == null) {
@@ -165,6 +162,7 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
             return;
         }
 
+        finished = true;
         alreadyClosed = true;
 
         try {

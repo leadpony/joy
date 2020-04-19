@@ -37,6 +37,12 @@ public class BasicJsonLocation implements JsonLocation {
     private final long columnNumber;
     private final long streamOffset;
 
+    public BasicJsonLocation(long streamOffset) {
+        this.lineNumber = -1;
+        this.columnNumber = -1;
+        this.streamOffset = streamOffset;
+    }
+
     public BasicJsonLocation(long lineNumber, long columnNumber, long streamOffset) {
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;

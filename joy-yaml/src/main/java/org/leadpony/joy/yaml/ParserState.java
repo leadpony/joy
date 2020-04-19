@@ -19,11 +19,13 @@ package org.leadpony.joy.yaml;
 import java.util.Iterator;
 import java.util.Optional;
 
+import org.leadpony.joy.core.BasicJsonLocation;
 import org.leadpony.joy.core.Message;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
 import org.snakeyaml.engine.v2.exceptions.Mark;
-import org.snakeyaml.engine.v2.exceptions.ParserException;
+import org.snakeyaml.engine.v2.exceptions.MarkedYamlEngineException;
+import org.snakeyaml.engine.v2.exceptions.ReaderException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 
 import jakarta.json.JsonException;
@@ -127,11 +129,16 @@ enum ParserState {
     final Event fetchEvent(Iterator<Event> it) {
         try {
             return doFetchEvent(it);
-        } catch (ParserException e) {
+        } catch (MarkedYamlEngineException e) {
             throw new JsonParsingException(
                     e.getMessage(),
                     e,
                     JsonLocations.at(e.getProblemMark()));
+        } catch (ReaderException e) {
+            throw new JsonParsingException(
+                    e.getMessage(),
+                    e,
+                    new BasicJsonLocation(e.getPosition()));
         } catch (YamlEngineException e) {
             throw new JsonException(Message.PARSER_IO_ERROR_WHILE_READING.toString(), e);
         }
