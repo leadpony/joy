@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author leadpony
  */
-public class ConfigurableFactory {
+class ConfigurableFactory {
 
     public static final String[] NO_SUPPORTED_PROPERTIES = {};
 

@@ -16,30 +16,29 @@
 
 package org.leadpony.joy.yaml.tests;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import jakarta.json.Json;
-import jakarta.json.stream.JsonParser;
+import jakarta.json.JsonReader;
 
 /**
  * @author leadpony
  */
-public class JsonParserTest {
+public class JsonReaderTest {
 
-    public static class InputStreamTest extends AbstractJsonParserTest {
+    public static class InputStreamTest extends AbstractJsonReaderTest {
         @Override
-        protected JsonParser createParser(String json) {
-            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-            return Json.createParser(new ByteArrayInputStream(bytes));
+        protected JsonReader createReader(InputStream in) {
+            return Json.createReader(in);
         }
     }
 
-    public static class ReaderTest extends AbstractJsonParserTest {
+    public static class ReaderTest extends AbstractJsonReaderTest {
         @Override
-        protected JsonParser createParser(String json) {
-            return Json.createParser(new StringReader(json));
+        protected JsonReader createReader(InputStream in) {
+            return Json.createReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         }
     }
 }

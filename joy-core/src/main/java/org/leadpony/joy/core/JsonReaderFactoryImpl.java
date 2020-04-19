@@ -23,33 +23,41 @@ import java.util.Map;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonReaderFactory;
 import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonParserFactory;
 
 /**
  * An implementation of {@link JsonReaderFactory}.
  *
  * @author leadpony
  */
-class JsonReaderFactoryImpl extends JsonParserFactoryImpl implements JsonReaderFactory {
+class JsonReaderFactoryImpl extends ConfigurableFactory implements JsonReaderFactory {
 
-    JsonReaderFactoryImpl(Map<String, ?> config, CharBufferFactory bufferFactory) {
-        super(config, bufferFactory);
+    private final JsonParserFactory parserFactory;
+
+    JsonReaderFactoryImpl(Map<String, ?> config, JsonParserFactory parserFactory) {
+        super(config);
+        this.parserFactory = parserFactory;
     }
 
     @Override
     public JsonReader createReader(Reader reader) {
-        JsonParser parser = createParser(reader);
+        JsonParser parser = getParserFactory().createParser(reader);
         return new JsonReaderImpl(parser);
     }
 
     @Override
     public JsonReader createReader(InputStream in) {
-        JsonParser parser = createParser(in);
+        JsonParser parser = getParserFactory().createParser(in);
         return new JsonReaderImpl(parser);
     }
 
     @Override
     public JsonReader createReader(InputStream in, Charset charset) {
-        JsonParser parser = createParser(in, charset);
+        JsonParser parser = getParserFactory().createParser(in, charset);
         return new JsonReaderImpl(parser);
+    }
+
+    private JsonParserFactory getParserFactory() {
+        return parserFactory;
     }
 }

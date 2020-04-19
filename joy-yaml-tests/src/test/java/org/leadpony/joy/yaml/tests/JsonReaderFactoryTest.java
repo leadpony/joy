@@ -16,8 +16,8 @@
 
 package org.leadpony.joy.yaml.tests;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -26,48 +26,47 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 
 import jakarta.json.Json;
-import jakarta.json.stream.JsonParser;
-import jakarta.json.stream.JsonParserFactory;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonReaderFactory;
 
 /**
  * @author leadpony
  */
-public class JsonParserFactoryTest {
+public class JsonReaderFactoryTest {
 
-    private JsonParserFactory factory;
+    private JsonReaderFactory factory;
 
     @BeforeEach
     public void setUp() {
-        factory = Json.createParserFactory(Collections.emptyMap());
+        factory = Json.createReaderFactory(Collections.emptyMap());
     }
 
     @Nested
-    public class InputStreamTest extends AbstractJsonParserTest {
+    public class InputStreamTest extends AbstractJsonReaderTest {
 
         @Override
-        protected JsonParser createParser(String json) {
-            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-            return factory.createParser(new ByteArrayInputStream(bytes));
+        protected JsonReader createReader(InputStream in) {
+            return factory.createReader(in);
         }
     }
 
     @Nested
-    public class InputStreamAndCharsetTest extends AbstractJsonParserTest {
+    public class InputStreamAndCharsetTest extends AbstractJsonReaderTest {
 
         @Override
-        protected JsonParser createParser(String json) {
+        protected JsonReader createReader(InputStream in) {
             Charset charset = StandardCharsets.UTF_8;
-            byte[] bytes = json.getBytes(charset);
-            return factory.createParser(new ByteArrayInputStream(bytes), charset);
+            return factory.createReader(in, charset);
         }
     }
 
     @Nested
-    public class ReaderTest extends AbstractJsonParserTest {
+    public class ReaderTest extends AbstractJsonReaderTest {
 
         @Override
-        protected JsonParser createParser(String json) {
-            return factory.createParser(new StringReader(json));
+        protected JsonReader createReader(InputStream in) {
+            var source = new InputStreamReader(in, StandardCharsets.UTF_8);
+            return factory.createReader(source);
         }
     }
 }

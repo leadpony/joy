@@ -137,7 +137,8 @@ public abstract class AbstractJsonProvider extends JsonProvider {
 
     @Override
     public JsonReaderFactory createReaderFactory(Map<String, ?> config) {
-        return new JsonReaderFactoryImpl(getConfigOrEmpty(config), bufferFactory);
+        JsonParserFactory parserFactory = createParserFactory(config);
+        return new JsonReaderFactoryImpl(getConfigOrEmpty(config), parserFactory);
     }
 
     @Override
