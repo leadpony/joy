@@ -5,7 +5,7 @@
 [![Javadocs](https://www.javadoc.io/badge/jakarta.json/jakarta.json-api.svg)](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.6/index.html)
 [![Build Status](https://travis-ci.org/leadpony/joy.svg?branch=master)](https://travis-ci.org/leadpony/joy)
 
-Joy is a fast and robust implementation of [Jakarta JSON Processing API] (JSON-P).
+Joy is yet another implementation of [Jakarta JSON Processing API] (JSON-P).
 
 ## Key Features
 
@@ -18,7 +18,11 @@ Joy is a fast and robust implementation of [Jakarta JSON Processing API] (JSON-P
 
 ## Getting Started
 
-First, add the JSON-P API as a dependency to your `pom.xml`.
+### Joy version 2
+
+Joy version 2 is an implementation of [Jakarta JSON Processing API] version 2.x, which is now migrated to `jakarta.json` package. Please note that this is still a prerelease and the API may be changed.
+
+For using this version, the following 2 dependencies neeed to be added in your `pom.xml` as an API and its implementation, respectively.
 
 ```xml
 <dependency>
@@ -26,11 +30,7 @@ First, add the JSON-P API as a dependency to your `pom.xml`.
     <artifactId>jakarta.json-api</artifactId>
     <version>2.0.0-RC2</version>
 </dependency>
-```
 
-Next, add this software as an implementation of the API.
-
-```xml
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy</artifactId>
@@ -38,6 +38,26 @@ Next, add this software as an implementation of the API.
     <scope>runtime</scope>
 </dependency>
 ```
+
+### Joy version 1
+
+Joy version 1 is an implementation of [Jakarta JSON Processing API] version 1, which was defined in `javax.json` package. For using this version, the following 2 dependencies neeed to be added in your `pom.xml` as an API and its implementation, respectively.
+
+```xml
+<dependency>
+    <groupId>jakarta.json</groupId>
+    <artifactId>jakarta.json-api</artifactId>
+    <version>1.1.6</version>
+</dependency>
+
+<dependency>
+    <groupId>org.leadpony.joy</groupId>
+    <artifactId>joy</artifactId>
+    <version>1.3.0</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
 ## Beyond the Standard API
 
 For using the provider-specific API shown below, `scope` element of `dependency` must be changed from `runtime` to `compile` or be removed entirely.
@@ -60,9 +80,9 @@ The following configuration properties are added.
   value of the property could be anything.
 
 ## Additional Resources
-* [JSON-P API Reference in Javadoc]
-* [Joy API Reference in Javadoc]
-* [Changelog]
+* [Jakarta JSON Processing API Reference in Javadoc](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api)
+* [Joy API Reference in Javadoc](https://javadoc.io/doc/org.leadpony.joy/joy)
+* [Changelog](CHANGELOG.md)
 
 ## Building from Source
 
@@ -85,21 +105,12 @@ Copyright 2019-2020 the original author or authors. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this product except in compliance with the License.
 You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+<http://www.apache.org/licenses/LICENSE-2.0>
 
 [Apache 2.0 License]: https://www.apache.org/licenses/LICENSE-2.0
 [Jakarta JSON Processing API]: https://eclipse-ee4j.github.io/jsonp/
 [Jakarta JSON Binding]: http://json-b.net/
 [JSON-P Test Suite]: https://github.com/leadpony/jsonp-test-suite
-[JSON-P API Reference in Javadoc]: https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.5
-[Joy API Reference in Javadoc]: https://javadoc.io/doc/org.leadpony.joy/joy
-[Changelog]: CHANGELOG.md
 [Maven]: https://maven.apache.org/
 [Jakarta JSON Processing]: https://eclipse-ee4j.github.io/jsonp/
 [Apache Johnzon]: https://johnzon.apache.org/
