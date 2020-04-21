@@ -857,7 +857,7 @@ class BasicJsonParser extends AbstractJsonParser {
                 if (c == ',') {
                     return parser.processValue();
                 } else {
-                    throw parser.newUnexpectedCharException(c, COLON_OR_SQURE_BRACKET);
+                    throw parser.newUnexpectedCharException(c, COMMA_OR_SQURE_BRACKET);
                 }
             }
 
@@ -923,8 +923,8 @@ class BasicJsonParser extends AbstractJsonParser {
         private static final Set<JsonChar> COLON_OR_CURLY_BRACKET = JsonChar.of(
                 JsonChar.COLON, JsonChar.CLOSING_CURLY_BRACKET);
 
-        private static final Set<JsonChar> COLON_OR_SQURE_BRACKET = JsonChar.of(
-                JsonChar.COLON, JsonChar.CLOSING_SQURE_BRACKET);
+        private static final Set<JsonChar> COMMA_OR_SQURE_BRACKET = JsonChar.of(
+                JsonChar.COMMA, JsonChar.CLOSING_SQURE_BRACKET);
 
         boolean accepts(int c, BasicJsonParser parser) {
             if (c >= 0) {
