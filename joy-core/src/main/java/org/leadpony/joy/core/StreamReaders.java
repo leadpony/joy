@@ -140,7 +140,7 @@ final class StreamReaders {
             return createReader(in, DEFAULT_ENCODING, (byte) b1, (byte) b2, (byte) b3, (byte) b4);
 
         } catch (IOException e) {
-            throw new JsonException(Message.PARSER_IO_ERROR_WHILE_READING.toString(), e);
+            throw new JsonException(Message.thatIOErrorOccurredWhileParserWasReading(), e);
         }
     }
 

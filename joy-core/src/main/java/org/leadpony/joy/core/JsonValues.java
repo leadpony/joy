@@ -175,7 +175,7 @@ public final class JsonValues {
         } else if (value instanceof JsonObjectBuilder) {
             return ((JsonObjectBuilder) value).build();
         }
-        throw new IllegalArgumentException(Message.JSON_VALUE_UNSUPPORTED_TYPE.with(value.getClass().getName()));
+        throw new IllegalArgumentException(Message.thatObjectCannotBeConvertedToJsonValue(value));
     }
 
     /**

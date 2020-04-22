@@ -140,7 +140,7 @@ enum ParserState {
                     e,
                     new BasicJsonLocation(e.getPosition()));
         } catch (YamlEngineException e) {
-            throw new JsonException(Message.PARSER_IO_ERROR_WHILE_READING.toString(), e);
+            throw new JsonException(Message.thatIOErrorOccurredWhileParserWasReading(), e);
         }
     }
 
@@ -190,7 +190,7 @@ enum ParserState {
         int c = mark.map(m -> m.getBuffer()[m.getPointer()]).orElse((int) ' ');
         StringBuilder sb = new StringBuilder();
         sb.append("'").append((char) c).append("'");
-        String message = Message.PARSER_UNEXPECTED_CHAR.with(location, sb.toString());
+        String message = Message.thatUnexpectedEndOfInputWasReachedBeforeChar(location, sb.toString());
         return new JsonParsingException(message, location);
     }
 }

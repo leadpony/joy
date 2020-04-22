@@ -220,8 +220,7 @@ interface PatchOperation {
             if (from.equals(to)) {
                 return target;
             } else if (to.startsWith(from)) {
-                String message = Message.PATCH_ILLEGAL_MOVE_OPERATION.with(from, to);
-                throw new JsonException(message);
+                throw new JsonException(Message.thatJsonValueCannotBeMoved(from, to));
             }
             JsonValue value = from.getValue(target);
             T removed = from.remove(target);
@@ -289,8 +288,7 @@ interface PatchOperation {
         public <T extends JsonStructure> T apply(T target) {
             JsonValue actual = getPointer().getValue(target);
             if (!this.value.equals(actual)) {
-                String message = Message.PATCH_TEST_FAILED.with(getPath());
-                throw new JsonException(message);
+                throw new JsonException(Message.thatJsonValueIsNotEqualToExpected(getPath()));
             }
             return target;
         }
@@ -352,7 +350,7 @@ interface PatchOperation {
 
         String op = object.getString("op", null);
         if (op == null) {
-            return new Malformed(Message.PATCH_NO_OPERATION.toString());
+            return new Malformed(Message.thatJsonPatchDoesNotContainOperation());
         }
 
         switch (op) {
@@ -431,10 +429,10 @@ interface PatchOperation {
     }
 
     static PatchOperation unknown(String op) {
-        return new Malformed(Message.PATCH_UNKNOWN_OPERATION.with(op));
+        return new Malformed(Message.thatJsonPatchContainsUnknownOperation(op));
     }
 
     static PatchOperation malformed(String op, String name) {
-        return new Malformed(Message.PATCH_MALFORMED_OPERATION.with(op, name));
+        return new Malformed(Message.thatJsonPatchDoesNotContainProperty(op, name));
     }
 }

@@ -101,7 +101,7 @@ class BasicJsonParser extends AbstractJsonParser {
     @Override
     public Event next() {
         if (!hasNext()) {
-            throw new NoSuchElementException(Message.PARSER_NO_EVENTS.toString());
+            throw new NoSuchElementException(Message.thatNoMoreParserEventsWereFound());
         }
         this.readyToNext = false;
         this.location = null;
@@ -183,7 +183,7 @@ class BasicJsonParser extends AbstractJsonParser {
         try {
             reader.close();
         } catch (IOException e) {
-            throw newJsonException(Message.PARSER_IO_ERROR_WHILE_CLOSING, e);
+            throw newJsonException(Message.thatIOErrorOccurredWhileParserWasClosing(), e);
         }
     }
 
@@ -386,7 +386,7 @@ class BasicJsonParser extends AbstractJsonParser {
             this.readPos = newStart;
             return true;
         } catch (IOException e) {
-            throw newJsonException(Message.PARSER_IO_ERROR_WHILE_READING, e);
+            throw newJsonException(Message.thatIOErrorOccurredWhileParserWasReading(), e);
         }
     }
 
@@ -774,7 +774,7 @@ class BasicJsonParser extends AbstractJsonParser {
             return newUnexpectedEndException();
         }
         JsonLocation location = getLocation();
-        String message = Message.PARSER_UNEXPECTED_CHAR.with(
+        String message = Message.thatUnexpectedCharWasFound(
                 location, JsonChar.toString((char) actual));
         return new JsonParsingException(message, location);
     }
@@ -784,14 +784,14 @@ class BasicJsonParser extends AbstractJsonParser {
             return newUnexpectedEndException(expected);
         }
         JsonLocation location = getLocation();
-        String message = Message.PARSER_UNEXPECTED_CHAR_FOR.with(
+        String message = Message.thatUnexpectedCharWasFoundFor(
                 location, JsonChar.toString((char) actual), expected);
         return new JsonParsingException(message, location);
     }
 
     JsonParsingException newUnexpectedEndException() {
         JsonLocation location = getLocation();
-        String message = Message.PARSER_UNEXPECTED_EOI.with(location);
+        String message = Message.thatUnexpectedEndOfInputWasReached(location);
         return new JsonParsingException(message, location);
     }
 

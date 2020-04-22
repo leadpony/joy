@@ -91,7 +91,7 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
             this.eventType = state.processEvent(yamlEvent, this);
             return this.eventType.toJsonEvent();
         } else {
-            throw new NoSuchElementException(Message.PARSER_NO_EVENTS.toString());
+            throw new NoSuchElementException(Message.thatNoMoreParserEventsWereFound());
         }
     }
 
@@ -168,7 +168,7 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
         try {
             closeable.close();
         } catch (IOException e) {
-            throw newJsonException(Message.PARSER_IO_ERROR_WHILE_CLOSING, e);
+            throw newJsonException(Message.thatIOErrorOccurredWhileParserWasClosing(), e);
         }
     }
 

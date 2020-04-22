@@ -221,24 +221,24 @@ public abstract class AbstractJsonParser implements JsonParser {
 
     /* provides parsing exceptions */
 
-    protected JsonException newJsonException(Message message, Exception e) {
-        return new JsonException(message.toString(), e);
+    protected JsonException newJsonException(String message, Exception e) {
+        return new JsonException(message, e);
     }
 
     protected IllegalStateException newIllegalStateException(String method) {
-        String message = Message.PARSER_ILLEGAL_STATE.with(method, getCurrentEvent());
+        String message = Message.thatParserIsInIllegalState(method, getCurrentEvent());
         return new IllegalStateException(message);
     }
 
     protected JsonParsingException newUnexpectedEndException(Set<Event> expected) {
         JsonLocation location = getLocation();
-        String message = Message.PARSER_UNEXPECTED_EOI_FOR_EVENTS.with(location, expected);
+        String message = Message.thatUnexpectedEndOfInputWasReachedBeforeEvents(location, expected);
         return new JsonParsingException(message, location);
     }
 
     protected JsonParsingException newUnexpectedEndException(Object expected) {
         JsonLocation location = getLocation();
-        String message = Message.PARSER_UNEXPECTED_EOI_FOR_CHAR.with(location, expected);
+        String message = Message.thatUnexpectedEndOfInputWasReachedBeforeChar(location, expected);
         return new JsonParsingException(message, location);
     }
 }

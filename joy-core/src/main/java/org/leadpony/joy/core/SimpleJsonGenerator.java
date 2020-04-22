@@ -25,6 +25,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 
 import jakarta.json.JsonArray;
 import jakarta.json.JsonException;
@@ -221,7 +222,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
     @Override
     public void close() {
         if (state != State.FINAL) {
-            throw newJsonGenerationException(Message.GENERATOR_NOT_COMPLETED);
+            throw newJsonGenerationException(Message.thatGeneratorIsNotCompleted());
         }
     }
 
@@ -329,12 +330,12 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
         append(':');
     }
 
-    static JsonException newJsonException(Message message, IOException e) {
-        return new JsonException(message.toString(), e);
+    static JsonException newJsonException(String message, IOException e) {
+        return new JsonException(message, e);
     }
 
-    static JsonGenerationException newJsonGenerationException(Message message) {
-        return new JsonGenerationException(message.toString());
+    static JsonGenerationException newJsonGenerationException(String message) {
+        return new JsonGenerationException(message);
     }
 
     /**
@@ -343,7 +344,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
      * @author leadpony
      */
     enum State {
-        INITIAL(Message.GENERATOR_ILLEGAL_CALL_FIRST) {
+        INITIAL(Message::thatIllegalGeneratorMethodWasCalledBeforeAll) {
 
             @Override
             State writeStartObject(SimpleJsonGenerator g) {
@@ -414,10 +415,10 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             }
         },
 
-        FINAL(Message.GENERATOR_ILLEGAL_CALL_AFTER_END) {
+        FINAL(Message::thatIllegalGeneratorMethodWasCalledAfterAll) {
         },
 
-        START_ARRAY(Message.GENERATOR_ILLEGAL_CALL_AFTER_ARRAY_START) {
+        START_ARRAY(Message::thatIllegalGeneratorMethodWasCalledAfterArrayStart) {
 
             @Override
             State writeStartObject(SimpleJsonGenerator g) {
@@ -505,7 +506,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             }
         },
 
-        ARRAY(Message.GENERATOR_ILLEGAL_CALL_AFTER_ARRAY_ITEM) {
+        ARRAY(Message::thatIllegalGeneratorMethodWasCalledAfterArrayItem) {
 
             @Override
             State writeStartObject(SimpleJsonGenerator g) {
@@ -593,7 +594,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             }
         },
 
-        START_OBJECT(Message.GENERATOR_ILLEGAL_CALL_AFTER_OBJECT_START) {
+        START_OBJECT(Message::thatIllegalGeneratorMethodWasCalledAfterObjectStart) {
 
             @Override
             State writeStartObject(SimpleJsonGenerator g, String name) {
@@ -699,7 +700,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             }
         },
 
-        KEY_NAME(Message.GENERATOR_ILLEGAL_CALL_AFTER_PROPERTY_KEY) {
+        KEY_NAME(Message::thatIllegalGeneratorMethodWasCalledAfterPropertyKey) {
 
             @Override
             State writeStartObject(SimpleJsonGenerator g) {
@@ -770,7 +771,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             }
         },
 
-        OBJECT(Message.GENERATOR_ILLEGAL_CALL_AFTER_PROPERTY_VALUE) {
+        OBJECT(Message::thatIllegalGeneratorMethodWasCalledAfterPropertyValue) {
             @Override
             State writeStartObject(SimpleJsonGenerator g, String name) {
                 g.appendComma();
@@ -875,9 +876,9 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             }
         };
 
-        private final Message message;
+        private final Function<String, String> message;
 
-        State(Message message) {
+        State(Function<String, String> message) {
             this.message = message;
         }
 
@@ -978,7 +979,7 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
         }
 
         protected final JsonGenerationException newJsonGenerationException(String method) {
-            return new JsonGenerationException(message.with(method));
+            return new JsonGenerationException(message.apply(method));
         }
     }
 }

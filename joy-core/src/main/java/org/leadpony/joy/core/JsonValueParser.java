@@ -257,7 +257,7 @@ class JsonValueParser extends AbstractJsonParser {
 
         @Override
         public Event getEvent(JsonValueParser parser) {
-            throw new NoSuchElementException(Message.PARSER_NO_EVENTS.toString());
+            throw new NoSuchElementException(Message.thatNoMoreParserEventsWereFound());
         }
 
         @Override

@@ -46,7 +46,7 @@ final class JsonPointerImpl implements ExtendedJsonPointer {
         }
 
         if (jsonPointer.charAt(0) != '/') {
-            throw newInvalidPointerException(Message.POINTER_MISSING_SLASH);
+            throw newInvalidPointerException(Message.thatSlashIsMissingInJsonPointer());
         }
 
         return createPointer(jsonPointer);
@@ -332,18 +332,16 @@ final class JsonPointerImpl implements ExtendedJsonPointer {
         return true;
     }
 
-    private static JsonException newInvalidPointerException(Message message) {
-        return new JsonException(message.toString());
+    private static JsonException newInvalidPointerException(String message) {
+        return new JsonException(message);
     }
 
     private JsonException newNoSuchValueException() {
-        String message = Message.POINTER_NO_SUCH_VALUE.with(jsonPointer);
-        return new JsonException(message);
+        return new JsonException(Message.thatJsonValueDoesNotExistAt(this));
     }
 
     private JsonException newIllegalOperationException() {
-        String message = Message.POINTER_CANNOT_ADD.with(jsonPointer);
-        return new JsonException(message);
+        return new JsonException(Message.thatJsonValueCannotBeAddedAt(this));
     }
 
     /**
@@ -409,20 +407,20 @@ final class JsonPointerImpl implements ExtendedJsonPointer {
             if (target.getValueType() == value.getValueType()) {
                 return (T) value;
             }
-            throw newJsonException(Message.POINTER_ILLEGAL_VALUE_TYPE);
+            throw newJsonException(Message.thatJsonValueMustBeTheSameTypeAsTarget());
         }
 
         @Override
         public <T extends JsonStructure> T remove(T target) {
             requireNonNull(target, "target");
-            throw newJsonException(Message.POINTER_CANNOT_REMOVE_ALL);
+            throw newJsonException(Message.thatJsonDocumentCannotBeRemoved());
         }
 
         @Override
         public <T extends JsonStructure> T replace(T target, JsonValue value) {
             requireNonNull(target, "target");
             requireNonNull(value, "value");
-            throw newJsonException(Message.POINTER_CANNOT_REPLACE_ALL);
+            throw newJsonException(Message.thatJsonDocumentCannotBeReplaced());
         }
 
         @Override
@@ -463,8 +461,8 @@ final class JsonPointerImpl implements ExtendedJsonPointer {
             return "";
         }
 
-        private static JsonException newJsonException(Message message) {
-            return new JsonException(message.toString());
+        private static JsonException newJsonException(String message) {
+            return new JsonException(message);
         }
     }
 

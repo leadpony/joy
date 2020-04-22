@@ -48,7 +48,7 @@ class CompactJsonGenerator extends SimpleJsonGenerator {
             writer.close();
             bufferFactory.releaseBuffer(writeBuffer);
         } catch (IOException e) {
-            throw newJsonException(Message.GENERATOR_IO_ERROR_WHILE_CLOSING, e);
+            throw newJsonException(Message.thatIOErrorOccurredWhileGeneratorWasClosing(), e);
         } finally {
             alreadyClosed = true;
         }
@@ -60,7 +60,7 @@ class CompactJsonGenerator extends SimpleJsonGenerator {
             flushBuffer();
             writer.flush();
         } catch (IOException e) {
-            throw newJsonException(Message.GENERATOR_IO_ERROR_WHILE_WRITING_OR_FLUSHING, e);
+            throw newJsonException(Message.thatIOErrorOccurredWhileGeneratorWasWriting(), e);
         }
     }
 
@@ -70,7 +70,7 @@ class CompactJsonGenerator extends SimpleJsonGenerator {
             writer.write(writeBuffer, 0, pos);
             writePos = 0;
         } catch (IOException e) {
-            throw newJsonException(Message.GENERATOR_IO_ERROR_WHILE_WRITING_OR_FLUSHING, e);
+            throw newJsonException(Message.thatIOErrorOccurredWhileGeneratorWasWriting(), e);
         }
     }
 

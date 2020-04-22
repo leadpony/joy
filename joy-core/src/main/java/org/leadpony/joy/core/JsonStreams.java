@@ -73,7 +73,8 @@ final class JsonStreams {
                         return true;
                     } else {
                         JsonLocation location = parser.getLocation();
-                        String message = Message.PARSER_UNEXPECTED_EOI_FOR_EVENTS.with(location, ParserEventSet.VALUES);
+                        String message = Message.thatUnexpectedEndOfInputWasReachedBeforeEvents(
+                                location, ParserEventSet.VALUES);
                         throw new JsonParsingException(message, location);
                     }
                 } else {

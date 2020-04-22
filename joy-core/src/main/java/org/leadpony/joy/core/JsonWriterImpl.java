@@ -102,10 +102,10 @@ class JsonWriterImpl implements JsonWriter {
 
     private void checkState() {
         if (alreadyClosed) {
-            throw new IllegalStateException(Message.WRITER_ALREADY_CLOSED.toString());
+            throw new IllegalStateException(Message.thatWriterHasBeenAlreadyClosed());
         }
         if (alreadyWritten) {
-            throw new IllegalStateException(Message.WRITER_ALREADY_WRITTEN.toString());
+            throw new IllegalStateException(Message.thatWriterHasAlreadyWritten());
         }
     }
 }

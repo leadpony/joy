@@ -116,7 +116,7 @@ class JsonReaderImpl implements JsonReader {
     private JsonParsingException newUnexpectedEndException(Set<Event> expected) {
         JsonLocation location = parser.getLocation();
         return new JsonParsingException(
-                Message.PARSER_UNEXPECTED_EOI_FOR_EVENTS.with(location, expected),
+                Message.thatUnexpectedEndOfInputWasReachedBeforeEvents(location, expected),
                 location);
     }
 }

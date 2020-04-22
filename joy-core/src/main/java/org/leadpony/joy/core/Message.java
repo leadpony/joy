@@ -15,94 +15,242 @@
  */
 package org.leadpony.joy.core;
 
+import static org.leadpony.joy.core.Preconditions.requireNonNull;
+
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
+import java.util.Set;
 
+import jakarta.json.JsonPointer;
 import jakarta.json.stream.JsonLocation;
+import jakarta.json.stream.JsonParser.Event;
 
 /**
  * @author leadpony
  */
-public enum Message {
-    PARSER_ILLEGAL_STATE,
-    PARSER_UNEXPECTED_CHAR,
-    PARSER_UNEXPECTED_CHAR_FOR,
-    PARSER_UNEXPECTED_EOI,
-    PARSER_UNEXPECTED_EOI_FOR_CHAR,
-    PARSER_UNEXPECTED_EOI_FOR_EVENTS,
-    PARSER_NO_EVENTS,
-    PARSER_IO_ERROR_WHILE_READING,
-    PARSER_IO_ERROR_WHILE_CLOSING,
-    LOCATION,
-
-    GENERATOR_ILLEGAL_CALL_FIRST,
-    GENERATOR_ILLEGAL_CALL_AFTER_ARRAY_START,
-    GENERATOR_ILLEGAL_CALL_AFTER_ARRAY_ITEM,
-    GENERATOR_ILLEGAL_CALL_AFTER_OBJECT_START,
-    GENERATOR_ILLEGAL_CALL_AFTER_PROPERTY_KEY,
-    GENERATOR_ILLEGAL_CALL_AFTER_PROPERTY_VALUE,
-    GENERATOR_ILLEGAL_CALL_AFTER_END,
-    GENERATOR_NOT_COMPLETED,
-    GENERATOR_IO_ERROR_WHILE_WRITING_OR_FLUSHING,
-    GENERATOR_IO_ERROR_WHILE_CLOSING,
-
-    WRITER_ALREADY_WRITTEN,
-    WRITER_ALREADY_CLOSED,
-
-    POINTER_MISSING_SLASH,
-    POINTER_NO_SUCH_VALUE,
-    POINTER_CANNOT_ADD,
-    POINTER_CANNOT_REMOVE_ALL,
-    POINTER_CANNOT_REPLACE_ALL,
-    POINTER_ILLEGAL_VALUE_TYPE,
-
-    PATCH_ILLEGAL_MOVE_OPERATION,
-    PATCH_TEST_FAILED,
-    PATCH_TYPE_MISMATCH,
-    PATCH_NO_OPERATION,
-    PATCH_UNKNOWN_OPERATION,
-    PATCH_MALFORMED_OPERATION,
-
-    JSON_VALUE_UNSUPPORTED_TYPE;
+public final class Message {
 
     private static final String BUNDLE_NAME = Message.class.getPackage().getName() + ".messages";
 
-    @Override
-    public String toString() {
-        return getPattern();
+    /*
+     * Messages for JSON parser
+     */
+
+    public static String thatParserIsInIllegalState(String method, Event event) {
+        requireNonNull(method, "method");
+        return format("ParserIsInIllegalState", method, nullable(event));
     }
 
-    public String with(Object... args) {
-        for (int i = 0; i < args.length; i++) {
-            args[i] = stringify(args[i]);
+    public static String thatUnexpectedCharWasFound(JsonLocation location, String actual) {
+        requireNonNull(location, "location");
+        requireNonNull(actual, "actual");
+        return format("UnexpectedCharWasFound", location(location), actual);
+    }
+
+    public static String thatUnexpectedCharWasFoundFor(JsonLocation location, String actual, Object expected) {
+        requireNonNull(location, "location");
+        requireNonNull(actual, "actual");
+        requireNonNull(expected, "expected");
+        if (expected instanceof Character) {
+            expected = JsonChar.toString((char) expected);
         }
-        String pattern = getPattern();
-        return MessageFormat.format(pattern, args);
+        return format("UnexpectedCharWasFoundFor", location(location), actual, expected);
+    }
+
+    public static String thatUnexpectedEndOfInputWasReached(JsonLocation location) {
+        requireNonNull(location, "location");
+        return format("UnexpectedEndOfInputWasReached", location(location));
+    }
+
+    public static String thatUnexpectedEndOfInputWasReachedBeforeChar(JsonLocation location, Object expected) {
+        requireNonNull(location, "location");
+        requireNonNull(expected, "expected");
+        if (expected instanceof Character) {
+            expected = JsonChar.toString((char) expected);
+        }
+        return format("UnexpectedEndOfInputWasReachedBeforeChar", location(location), expected);
+    }
+
+    public static String thatUnexpectedEndOfInputWasReachedBeforeEvents(JsonLocation location, Set<Event> expected) {
+        requireNonNull(location, "location");
+        requireNonNull(expected, "expected");
+        return format("UnexpectedEndOfInputWasReachedBeforeEvents", location(location), expected);
+    }
+
+    public static String thatNoMoreParserEventsWereFound() {
+        return format("NoMoreParserEventsWereFound");
+    }
+
+    public static String thatIOErrorOccurredWhileParserWasReading() {
+        return format("IOErrorOccurredWhileParserWasReading");
+    }
+
+    public static String thatIOErrorOccurredWhileParserWasClosing() {
+        return format("IOErrorOccurredWhileParserWasClosing");
+    }
+
+    /*
+     * Messages for JSON generator
+     */
+
+    public static String thatIllegalGeneratorMethodWasCalledBeforeAll(String method) {
+        requireNonNull(method, "method");
+        return format("IllegalGeneratorMethodWasCalledBeforeAll", method);
+    }
+
+    public static String thatIllegalGeneratorMethodWasCalledAfterArrayStart(String method) {
+        requireNonNull(method, "method");
+        return format("IllegalGeneratorMethodWasCalledAfterArrayStart", method);
+    }
+
+    public static String thatIllegalGeneratorMethodWasCalledAfterArrayItem(String method) {
+        requireNonNull(method, "method");
+        return format("IllegalGeneratorMethodWasCalledAfterArrayItem", method);
+    }
+
+    public static String thatIllegalGeneratorMethodWasCalledAfterObjectStart(String method) {
+        requireNonNull(method, "method");
+        return format("IllegalGeneratorMethodWasCalledAfterObjectStart", method);
+    }
+
+    public static String thatIllegalGeneratorMethodWasCalledAfterPropertyKey(String method) {
+        requireNonNull(method, "method");
+        return format("IllegalGeneratorMethodWasCalledAfterPropertyKey", method);
+    }
+
+    public static String thatIllegalGeneratorMethodWasCalledAfterPropertyValue(String method) {
+        requireNonNull(method, "method");
+        return format("IllegalGeneratorMethodWasCalledAfterPropertyValue", method);
+    }
+
+    public static String thatIllegalGeneratorMethodWasCalledAfterAll(String method) {
+        requireNonNull(method, "method");
+        return format("IllegalGeneratorMethodWasCalledAfterAll", method);
+    }
+
+    public static String thatGeneratorIsNotCompleted() {
+        return format("GeneratorIsNotCompleted");
+    }
+
+    public static String thatIOErrorOccurredWhileGeneratorWasWriting() {
+        return format("IOErrorOccurredWhileGeneratorWasWriting");
+    }
+
+    public static String thatIOErrorOccurredWhileGeneratorWasClosing() {
+        return format("IOErrorOccurredWhileGeneratorWasClosing");
+    }
+
+    /*
+     * Messages for JSON writer
+     */
+
+    public static String thatWriterHasAlreadyWritten() {
+        return format("WriterHasAlreadyWritten");
+    }
+
+    public static String thatWriterHasBeenAlreadyClosed() {
+        return format("WriterHasBeenAlreadyClosed");
+    }
+
+    /*
+     * Messages for JSON pointer
+     */
+
+    public static String thatSlashIsMissingInJsonPointer() {
+        return format("SlashIsMissingInJsonPointer");
+    }
+
+    public static String thatJsonValueDoesNotExistAt(JsonPointer pointer) {
+        requireNonNull(pointer, "pointer");
+        return format("JsonValueDoesNotExistAt", pointer.toString());
+    }
+
+    public static String thatJsonValueCannotBeAddedAt(JsonPointer pointer) {
+        requireNonNull(pointer, "pointer");
+        return format("JsonValueCannotBeAddedAt", pointer.toString());
+    }
+
+    public static String thatJsonDocumentCannotBeRemoved() {
+        return format("JsonDocumentCannotBeRemoved");
+    }
+
+    public static String thatJsonDocumentCannotBeReplaced() {
+        return format("JsonDocumentCannotBeReplaced");
+    }
+
+    public static String thatJsonValueMustBeTheSameTypeAsTarget() {
+        return format("JsonValueMustBeTheSameTypeAsTarget");
+    }
+
+    /*
+     * Messages for JSON patch
+     */
+
+    public static String thatJsonValueCannotBeMoved(JsonPointer from, JsonPointer to) {
+        requireNonNull(from, "from");
+        requireNonNull(to, "to");
+        return format("JsonValueCannotBeMoved", from, to);
+    }
+
+    public static String thatJsonValueIsNotEqualToExpected(String path) {
+        requireNonNull(path, "path");
+        return format("JsonValueIsNotEqualToExpected", path);
+    }
+
+    public static String thatSourceAndTargetTypesDoNotMatch() {
+        return format("SourceAndTargetTypesDoNotMatch");
+    }
+
+    public static String thatJsonPatchDoesNotContainOperation() {
+        return format("JsonPatchDoesNotContainOperation");
+    }
+
+    public static String thatJsonPatchContainsUnknownOperation(String op) {
+        requireNonNull(op, "op");
+        return format("JsonPatchContainsUnknownOperation", op);
+    }
+
+    public static String thatJsonPatchDoesNotContainProperty(String op, String name) {
+        requireNonNull(op, "op");
+        requireNonNull(name, "name");
+        return format("JsonPatchDoesNotContainProperty", op, name);
+    }
+
+    /*
+     * Messages for JSON value
+     */
+
+    public static String thatObjectCannotBeConvertedToJsonValue(Object object) {
+        return format("ObjectCannotBeConvertedToJsonValue", object.getClass().getName());
+    }
+
+    private Message() {
+    }
+
+    private static String format(String name) {
+        return getPattern(name);
+    }
+
+    private static String format(String name, Object... args) {
+        return MessageFormat.format(getPattern(name), args);
+    }
+
+    private static String location(JsonLocation location) {
+        return format("location",
+                location.getLineNumber(),
+                location.getColumnNumber(),
+                location.getStreamOffset());
+    }
+
+    private static String nullable(Object object) {
+        return (object == null) ? "null" : object.toString();
+    }
+
+    private static String getPattern(String name) {
+        return getBundle().getString(name);
     }
 
     private static ResourceBundle getBundle() {
         return ResourceBundle.getBundle(BUNDLE_NAME);
-    }
-
-    private String getPattern() {
-        return getBundle().getString(name());
-    }
-
-    private static String stringify(Object object) {
-        if (object == null) {
-            return "null";
-        } else if (object instanceof JsonLocation) {
-            return stringify((JsonLocation) object);
-        } else if (object instanceof Character) {
-            return JsonChar.toString((char) object);
-        }
-        return object.toString();
-    }
-
-    private static String stringify(JsonLocation location) {
-        return MessageFormat.format(LOCATION.getPattern(),
-                location.getLineNumber(),
-                location.getColumnNumber(),
-                location.getStreamOffset());
     }
 }

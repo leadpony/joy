@@ -209,7 +209,7 @@ public abstract class AbstractJsonProvider extends JsonProvider {
         requireNonNull(source, "source");
         requireNonNull(target, "target");
         if (source.getValueType() != target.getValueType()) {
-            throw new IllegalArgumentException(Message.PATCH_TYPE_MISMATCH.toString());
+            throw new IllegalArgumentException(Message.thatSourceAndTargetTypesDoNotMatch());
         }
         return JsonDiffPatchBuilder.createDiff(source, target);
     }
