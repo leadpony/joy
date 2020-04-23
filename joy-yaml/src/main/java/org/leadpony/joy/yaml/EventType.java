@@ -69,9 +69,9 @@ enum EventType {
             return EventType.STRING;
         }
 
-        String value = event.getValue();
+        final String value = event.getValue();
         if (value.isEmpty()) {
-            return EventType.STRING;
+            return EventType.NULL;
         } else {
             switch (value.charAt(0)) {
             case 't':

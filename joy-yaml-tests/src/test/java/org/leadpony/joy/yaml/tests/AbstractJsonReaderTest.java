@@ -55,7 +55,8 @@ public abstract class AbstractJsonReaderTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "/org/yaml/invoice.yml"
+            "/org/yaml/invoice.yml",
+            "/org/openapis/petstore.yaml"
     })
     public void readShouldReadJsonStructureAsExpected(String name) {
         InputStream in = getClass().getResourceAsStream(name);
@@ -67,7 +68,7 @@ public abstract class AbstractJsonReaderTest {
 
         assertThat(actual).isNotNull();
 
-        String jsonName = name.replaceAll("\\.yml", ".json");
+        String jsonName = name.replaceAll("\\.ya?ml", ".json");
         String expected = readExpectedJson(jsonName);
 
         assertThat(formatAsJson(actual)).isEqualTo(expected);
