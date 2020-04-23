@@ -56,7 +56,8 @@ public abstract class AbstractJsonReaderTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "/org/yaml/invoice.yml",
-            "/org/openapis/petstore.yaml"
+            "/org/openapis/petstore.yaml",
+            "null-key.yaml"
     })
     public void readShouldReadJsonStructureAsExpected(String name) {
         InputStream in = getClass().getResourceAsStream(name);

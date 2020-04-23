@@ -26,6 +26,8 @@ import jakarta.json.stream.JsonLocation;
 import jakarta.json.stream.JsonParser.Event;
 
 /**
+ * Messages for JSON processors.
+ *
  * @author leadpony
  */
 public final class Message {
@@ -44,7 +46,7 @@ public final class Message {
     public static String thatUnexpectedCharWasFound(JsonLocation location, String actual) {
         requireNonNull(location, "location");
         requireNonNull(actual, "actual");
-        return format("UnexpectedCharWasFound", location(location), actual);
+        return format("UnexpectedCharWasFound", at(location), actual);
     }
 
     public static String thatUnexpectedCharWasFoundFor(JsonLocation location, String actual, Object expected) {
@@ -54,12 +56,19 @@ public final class Message {
         if (expected instanceof Character) {
             expected = JsonChar.toString((char) expected);
         }
-        return format("UnexpectedCharWasFoundFor", location(location), actual, expected);
+        return format("UnexpectedCharWasFoundFor", at(location), actual, expected);
     }
 
     public static String thatUnexpectedEndOfInputWasReached(JsonLocation location) {
         requireNonNull(location, "location");
-        return format("UnexpectedEndOfInputWasReached", location(location));
+        return format("UnexpectedEndOfInputWasReached", at(location));
+    }
+
+    public static String thatUnexpectedEndOfInputWasReachedBeforeChar(JsonLocation location, char expected) {
+        requireNonNull(location, "location");
+        requireNonNull(expected, "expected");
+        String encoded = JsonChar.toString(expected);
+        return format("UnexpectedEndOfInputWasReachedBeforeChar", at(location), encoded);
     }
 
     public static String thatUnexpectedEndOfInputWasReachedBeforeChar(JsonLocation location, Object expected) {
@@ -68,13 +77,13 @@ public final class Message {
         if (expected instanceof Character) {
             expected = JsonChar.toString((char) expected);
         }
-        return format("UnexpectedEndOfInputWasReachedBeforeChar", location(location), expected);
+        return format("UnexpectedEndOfInputWasReachedBeforeChar", at(location), expected);
     }
 
     public static String thatUnexpectedEndOfInputWasReachedBeforeEvents(JsonLocation location, Set<Event> expected) {
         requireNonNull(location, "location");
         requireNonNull(expected, "expected");
-        return format("UnexpectedEndOfInputWasReachedBeforeEvents", location(location), expected);
+        return format("UnexpectedEndOfInputWasReachedBeforeEvents", at(location), expected);
     }
 
     public static String thatNoMoreParserEventsWereFound() {
@@ -156,8 +165,8 @@ public final class Message {
      * Messages for JSON pointer
      */
 
-    public static String thatSlashIsMissingInJsonPointer() {
-        return format("SlashIsMissingInJsonPointer");
+    public static String thatJsonPointerMustStartWithSlash() {
+        return format("JsonPointerMustStartWithSlash");
     }
 
     public static String thatJsonValueDoesNotExistAt(JsonPointer pointer) {
@@ -235,7 +244,7 @@ public final class Message {
         return MessageFormat.format(getPattern(name), args);
     }
 
-    private static String location(JsonLocation location) {
+    private static String at(JsonLocation location) {
         return format("location",
                 location.getLineNumber(),
                 location.getColumnNumber(),
@@ -247,10 +256,7 @@ public final class Message {
     }
 
     private static String getPattern(String name) {
-        return getBundle().getString(name);
-    }
-
-    private static ResourceBundle getBundle() {
-        return ResourceBundle.getBundle(BUNDLE_NAME);
+        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME);
+        return bundle.getString(name);
     }
 }

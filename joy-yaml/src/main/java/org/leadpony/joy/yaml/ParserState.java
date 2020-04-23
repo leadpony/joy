@@ -17,13 +17,11 @@
 package org.leadpony.joy.yaml;
 
 import java.util.Iterator;
-import java.util.Optional;
 
 import org.leadpony.joy.core.BasicJsonLocation;
 import org.leadpony.joy.core.Message;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
-import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.MarkedYamlEngineException;
 import org.snakeyaml.engine.v2.exceptions.ReaderException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -75,7 +73,11 @@ enum ParserState {
                 if (it.hasNext()) {
                     requireEvent(it.next(), Event.ID.StreamEnd);
                     if (it.hasNext()) {
-                        throw newParsingException(it.next().getStartMark());
+                        Event event = it.next();
+                        JsonLocation location = locate(event);
+                        char c = event.getStartMark().map(m -> (char) (m.getBuffer()[m.getPointer()])).orElse(' ');
+                        String message = Message.thatUnexpectedEndOfInputWasReachedBeforeChar(location, c);
+                        throw newParsingException(message, location);
                     }
                 }
             }
@@ -98,6 +100,7 @@ enum ParserState {
     MAPPING_KEY {
         @Override
         EventType processEvent(Event event, ParserContext context) {
+            JsonLocation location;
             switch (event.getEventId()) {
             case Scalar:
                 context.setState(MAPPING_VALUE);
@@ -105,9 +108,22 @@ enum ParserState {
             case MappingEnd:
                 context.endMapping();
                 return EventType.MAPPING_END;
+            case SequenceStart:
+                location = locate(event);
+                throw newParsingException(
+                        LocalMessage.thatPropertyKeyMustNotBeArray(location),
+                        location);
+            case MappingStart:
+                location = locate(event);
+                throw newParsingException(
+                        LocalMessage.thatPropertyKeyMustNotBeObject(location),
+                        location);
             default:
-                // TOOD
-                throw new IllegalStateException();
+                // This never happen.
+                location = locate(event);
+                throw newParsingException(
+                        LocalMessage.thatParserDetectedUnexpectedEvent(location, event),
+                        location);
             }
         }
     },
@@ -145,6 +161,7 @@ enum ParserState {
     }
 
     EventType processEvent(Event event, ParserContext context) {
+        JsonLocation location;
         switch (event.getEventId()) {
         case SequenceStart:
             context.beginSequence();
@@ -154,6 +171,11 @@ enum ParserState {
             return EventType.MAPPING_START;
         case Scalar:
             return EventType.of((ScalarEvent) event);
+        case Alias:
+            location = locate(event);
+            throw newParsingException(
+                LocalMessage.thatAliasIsNotSupported(location),
+                location);
         case SequenceEnd:
         case MappingEnd:
         case StreamStart:
@@ -175,22 +197,23 @@ enum ParserState {
 
     protected static Event requireEvent(Event event, Event.ID eventId) {
         if (event.getEventId() != eventId) {
-            // TODO
-            throw new IllegalStateException();
+            throw new IllegalStateException(
+                    LocalMessage.thatParserDetectedUnexpectedEvent(locate(event), event));
         }
         return event;
     }
 
-    protected static JsonParsingException newParsingException(Event event) {
-        return newParsingException(event.getStartMark());
+    protected static JsonParsingException newParsingException(String message, JsonLocation location) {
+        return new JsonParsingException(message, location);
     }
 
-    protected static JsonParsingException newParsingException(Optional<Mark> mark) {
-        JsonLocation location = JsonLocations.at(mark);
-        int c = mark.map(m -> m.getBuffer()[m.getPointer()]).orElse((int) ' ');
-        StringBuilder sb = new StringBuilder();
-        sb.append("'").append((char) c).append("'");
-        String message = Message.thatUnexpectedEndOfInputWasReachedBeforeChar(location, sb.toString());
-        return new JsonParsingException(message, location);
+    /**
+     * Returns the location of the specified event.
+     *
+     * @param event the event to locate
+     * @return the found location.
+     */
+    protected static JsonLocation locate(Event event) {
+        return JsonLocations.at(event.getStartMark());
     }
 }

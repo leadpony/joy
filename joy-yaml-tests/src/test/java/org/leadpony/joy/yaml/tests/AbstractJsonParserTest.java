@@ -17,20 +17,26 @@
 package org.leadpony.joy.yaml.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.leadpony.jsonp.testsuite.helper.LoggerFactory;
 
 import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonParser.Event;
+import jakarta.json.stream.JsonParsingException;
 
 /**
  * @author leadpony
  */
 public abstract class AbstractJsonParserTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractJsonParserTest.class);
 
     @ParameterizedTest
     @EnumSource(SimpleYamlTestCase.class)
@@ -44,6 +50,27 @@ public abstract class AbstractJsonParserTest {
         }
 
         assertThat(actual).containsExactly(test.events);
+    }
+
+    @ParameterizedTest
+    @EnumSource(IllFormedYamlTestCase.class)
+    public void nextShouldThrowParsingException(IllFormedYamlTestCase test) {
+        Throwable thrown = null;
+
+        try (JsonParser parser = createParser(test.yaml)) {
+            int iterations = test.iterations;
+            while (--iterations > 0) {
+                parser.next();
+            }
+
+            thrown = catchThrowable(() -> {
+                parser.next();
+            });
+        }
+
+        LOG.info(thrown.getMessage());
+
+        assertThat(thrown).isNotNull().isInstanceOf(JsonParsingException.class);
     }
 
     protected abstract JsonParser createParser(String json);

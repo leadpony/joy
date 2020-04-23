@@ -46,7 +46,7 @@ final class JsonPointerImpl implements ExtendedJsonPointer {
         }
 
         if (jsonPointer.charAt(0) != '/') {
-            throw newInvalidPointerException(Message.thatSlashIsMissingInJsonPointer());
+            throw newInvalidPointerException(Message.thatJsonPointerMustStartWithSlash());
         }
 
         return createPointer(jsonPointer);
