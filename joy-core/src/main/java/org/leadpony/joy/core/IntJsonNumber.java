@@ -68,6 +68,11 @@ class IntJsonNumber extends JsonNumberImpl {
     }
 
     @Override
+    public Number numberValue() {
+        return value;
+    }
+
+    @Override
     public String toString() {
         return Integer.toString(value);
     }

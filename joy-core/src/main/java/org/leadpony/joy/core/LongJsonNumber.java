@@ -66,6 +66,11 @@ class LongJsonNumber extends JsonNumberImpl {
     }
 
     @Override
+    public Number numberValue() {
+        return value;
+    }
+
+    @Override
     public String toString() {
         return Long.toString(value);
     }
