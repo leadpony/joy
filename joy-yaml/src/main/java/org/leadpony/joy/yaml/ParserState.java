@@ -22,6 +22,7 @@ import org.leadpony.joy.core.BasicJsonLocation;
 import org.leadpony.joy.core.Message;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
+import org.snakeyaml.engine.v2.exceptions.Mark;
 import org.snakeyaml.engine.v2.exceptions.MarkedYamlEngineException;
 import org.snakeyaml.engine.v2.exceptions.ReaderException;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -69,17 +70,19 @@ enum ParserState {
         @Override
         protected Event doFetchEvent(Iterator<Event> it) {
             if (it.hasNext()) {
-                requireEvent(it.next(), Event.ID.DocumentEnd);
-                if (it.hasNext()) {
-                    requireEvent(it.next(), Event.ID.StreamEnd);
-                    if (it.hasNext()) {
-                        Event event = it.next();
-                        JsonLocation location = locate(event);
-                        char c = event.getStartMark().map(m -> (char) (m.getBuffer()[m.getPointer()])).orElse(' ');
-                        String message = Message.thatUnexpectedEndOfInputWasReachedBeforeChar(location, c);
-                        throw newParsingException(message, location);
-                    }
+                Event event = it.next();
+                if (event.getEventId() == Event.ID.DocumentEnd) {
+                    return null;
                 }
+                JsonLocation location = locate(event);
+                event.getStartMark().ifPresent(mark -> {
+                    String message = Message.thatUnexpectedCharWasFound(
+                            location, firstCharOf(mark));
+                    throw newParsingException(message, location);
+                });
+                throw newParsingException(
+                        LocalMessage.thatParserDetectedUnexpectedEvent(location, event),
+                        location);
             }
             return null;
         }
@@ -120,10 +123,7 @@ enum ParserState {
                         location);
             default:
                 // This never happen.
-                location = locate(event);
-                throw newParsingException(
-                        LocalMessage.thatParserDetectedUnexpectedEvent(location, event),
-                        location);
+                throw newIllegalStateException(event);
             }
         }
     },
@@ -183,7 +183,7 @@ enum ParserState {
         case DocumentStart:
         case DocumentEnd:
         default:
-            throw new IllegalStateException();
+            throw newIllegalStateException(event);
         }
     }
 
@@ -197,14 +197,19 @@ enum ParserState {
 
     protected static Event requireEvent(Event event, Event.ID eventId) {
         if (event.getEventId() != eventId) {
-            throw new IllegalStateException(
-                    LocalMessage.thatParserDetectedUnexpectedEvent(locate(event), event));
+            throw newIllegalStateException(event);
         }
         return event;
     }
 
     protected static JsonParsingException newParsingException(String message, JsonLocation location) {
         return new JsonParsingException(message, location);
+    }
+
+    protected static IllegalStateException newIllegalStateException(Event event) {
+        JsonLocation location = locate(event);
+        String message = LocalMessage.thatParserDetectedUnexpectedEvent(location, event);
+        return new IllegalStateException(message);
     }
 
     /**
@@ -215,5 +220,9 @@ enum ParserState {
      */
     protected static JsonLocation locate(Event event) {
         return JsonLocations.at(event.getStartMark());
+    }
+
+    protected static char firstCharOf(Mark mark) {
+        return (char) mark.getBuffer()[mark.getPointer()];
     }
 }

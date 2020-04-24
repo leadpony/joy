@@ -774,8 +774,7 @@ class BasicJsonParser extends AbstractJsonParser {
             return newUnexpectedEndException();
         }
         JsonLocation location = getLocation();
-        String message = Message.thatUnexpectedCharWasFound(
-                location, JsonChar.toString((char) actual));
+        String message = Message.thatUnexpectedCharWasFound(location, (char) actual);
         return new JsonParsingException(message, location);
     }
 
@@ -785,7 +784,7 @@ class BasicJsonParser extends AbstractJsonParser {
         }
         JsonLocation location = getLocation();
         String message = Message.thatUnexpectedCharWasFoundFor(
-                location, JsonChar.toString((char) actual), expected);
+                location, (char) actual, expected);
         return new JsonParsingException(message, location);
     }
 

@@ -89,13 +89,24 @@ public enum SimpleYamlTestCase {
             Event.KEY_NAME,
             Event.VALUE_NULL,
             Event.END_OBJECT
+            ),
+
+    MULTIPLE_DOCUMENTS(
+            """
+            - 1
+            ---
+            - 2
+            """,
+            Event.START_ARRAY,
+            Event.VALUE_NUMBER,
+            Event.END_ARRAY
             );
 
-    final String json;
+    final String yaml;
     final Event events[];
 
-    SimpleYamlTestCase(String json, Event... events) {
-        this.json = json;
+    SimpleYamlTestCase(String yaml, Event... events) {
+        this.yaml = yaml;
         this.events = events;
     }
 }

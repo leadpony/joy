@@ -55,7 +55,8 @@ public abstract class AbstractJsonReaderTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "/org/yaml/invoice.yml",
+            "/org/yaml/invoice.yaml",
+            "/org/yaml/two-documents.yaml",
             "/org/openapis/petstore.yaml",
             "null-key.yaml"
     })

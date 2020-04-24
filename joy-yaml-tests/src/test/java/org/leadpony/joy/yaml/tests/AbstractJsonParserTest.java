@@ -43,7 +43,7 @@ public abstract class AbstractJsonParserTest {
     public void nextShouldReturnExpectedEventsFromReader(SimpleYamlTestCase test) {
         var actual = new ArrayList<Event>();
 
-        try (JsonParser parser = createParser(test.json)) {
+        try (JsonParser parser = createParser(test.yaml)) {
             while (parser.hasNext()) {
                 actual.add(parser.next());
             }

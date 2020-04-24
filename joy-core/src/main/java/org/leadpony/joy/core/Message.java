@@ -43,20 +43,20 @@ public final class Message {
         return format("ParserIsInIllegalState", method, nullable(event));
     }
 
-    public static String thatUnexpectedCharWasFound(JsonLocation location, String actual) {
+    public static String thatUnexpectedCharWasFound(JsonLocation location, char actual) {
         requireNonNull(location, "location");
-        requireNonNull(actual, "actual");
-        return format("UnexpectedCharWasFound", at(location), actual);
+        String encoded = JsonChar.toString(actual);
+        return format("UnexpectedCharWasFound", at(location), encoded);
     }
 
-    public static String thatUnexpectedCharWasFoundFor(JsonLocation location, String actual, Object expected) {
+    public static String thatUnexpectedCharWasFoundFor(JsonLocation location, char actual, Object expected) {
         requireNonNull(location, "location");
-        requireNonNull(actual, "actual");
         requireNonNull(expected, "expected");
+        String encoded = JsonChar.toString(actual);
         if (expected instanceof Character) {
             expected = JsonChar.toString((char) expected);
         }
-        return format("UnexpectedCharWasFoundFor", at(location), actual, expected);
+        return format("UnexpectedCharWasFoundFor", at(location), encoded, expected);
     }
 
     public static String thatUnexpectedEndOfInputWasReached(JsonLocation location) {
