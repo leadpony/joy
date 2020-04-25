@@ -16,7 +16,9 @@
 
 package org.leadpony.joy.yaml.tests;
 
-import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -45,9 +47,8 @@ public class JsonParserFactoryTest {
     public class InputStreamTest extends AbstractJsonParserTest {
 
         @Override
-        protected JsonParser createParser(String json) {
-            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-            return factory.createParser(new ByteArrayInputStream(bytes));
+        protected JsonParser createParser(InputStream in) {
+            return factory.createParser(in);
         }
     }
 
@@ -55,10 +56,9 @@ public class JsonParserFactoryTest {
     public class InputStreamAndCharsetTest extends AbstractJsonParserTest {
 
         @Override
-        protected JsonParser createParser(String json) {
+        protected JsonParser createParser(InputStream in) {
             Charset charset = StandardCharsets.UTF_8;
-            byte[] bytes = json.getBytes(charset);
-            return factory.createParser(new ByteArrayInputStream(bytes), charset);
+            return factory.createParser(in, charset);
         }
     }
 
@@ -66,8 +66,15 @@ public class JsonParserFactoryTest {
     public class ReaderTest extends AbstractJsonParserTest {
 
         @Override
-        protected JsonParser createParser(String json) {
-            return factory.createParser(new StringReader(json));
+        protected JsonParser createParser(InputStream in) {
+            Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
+            return factory.createParser(reader);
         }
-    }
+
+        @Override
+        protected JsonParser createParser(String json) {
+            Reader reader = new StringReader(json);
+            return factory.createParser(reader);
+        }
+}
 }

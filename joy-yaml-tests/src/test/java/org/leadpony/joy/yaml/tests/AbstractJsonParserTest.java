@@ -19,7 +19,10 @@ package org.leadpony.joy.yaml.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -40,7 +43,7 @@ public abstract class AbstractJsonParserTest {
 
     @ParameterizedTest
     @EnumSource(SimpleYamlTestCase.class)
-    public void nextShouldReturnExpectedEventsFromReader(SimpleYamlTestCase test) {
+    public void nextShouldReturnExpectedEvents(SimpleYamlTestCase test) {
         var actual = new ArrayList<Event>();
 
         try (JsonParser parser = createParser(test.yaml)) {
@@ -73,7 +76,25 @@ public abstract class AbstractJsonParserTest {
         assertThat(thrown).isNotNull().isInstanceOf(JsonParsingException.class);
     }
 
-    protected abstract JsonParser createParser(String json);
+    @ParameterizedTest
+    @EnumSource(YamlResource.class)
+    public void nextShouldReturnAllEventsFromJsonDocument(YamlResource test) {
+        try (JsonParser parser = createParser(test.getJsonAsStream())) {
+            while (parser.hasNext()) {
+                parser.next();
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(YamlResource.class)
+    public void nextShouldReturnAllEventsFromYamlDocument(YamlResource test) {
+        try (JsonParser parser = createParser(test.getYamlAsStream())) {
+            while (parser.hasNext()) {
+                parser.next();
+            }
+        }
+    }
 
     public enum StringTestCase {
         DOUBLE_QUOTED_UNICIDE(
@@ -199,5 +220,12 @@ public abstract class AbstractJsonParserTest {
         }
 
         assertThat(actual).isEqualTo(test.expected);
+    }
+
+    protected abstract JsonParser createParser(InputStream in);
+
+    protected JsonParser createParser(String json) {
+        byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+        return createParser(new ByteArrayInputStream(bytes));
     }
 }

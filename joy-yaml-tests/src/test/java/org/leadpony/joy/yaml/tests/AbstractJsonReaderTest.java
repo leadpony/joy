@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import jakarta.json.Json;
 import jakarta.json.JsonReader;
@@ -54,26 +54,32 @@ public abstract class AbstractJsonReaderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "/org/yaml/invoice.yaml",
-            "/org/yaml/two-documents.yaml",
-            "/org/openapis/petstore.yaml",
-            "null-key.yaml"
-    })
-    public void readShouldReadJsonStructureAsExpected(String name) {
-        InputStream in = getClass().getResourceAsStream(name);
-
-        JsonStructure actual = null;
-        try (JsonReader reader = createReader(in)) {
-            actual = reader.read();
+    @EnumSource(YamlResource.class)
+    public void readShouldReadYamlAsExpected(YamlResource test) {
+        JsonStructure yaml = null;
+        try (JsonReader reader = createReader(test.getYamlAsStream())) {
+            yaml = reader.read();
         }
 
-        assertThat(actual).isNotNull();
+        assertThat(yaml).isNotNull();
 
-        String jsonName = name.replaceAll("\\.ya?ml", ".json");
-        String expected = readExpectedJson(jsonName);
+        String expected = readExpectedJson(test.getJsonAsStream());
 
-        assertThat(formatAsJson(actual)).isEqualTo(expected);
+        assertThat(formatAsJson(yaml)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @EnumSource(YamlResource.class)
+    public void readShouldReadJsonAsExpected(YamlResource test) {
+        JsonStructure json = null;
+        try (JsonReader reader = createReader(test.getJsonAsStream())) {
+            json = reader.read();
+        }
+
+        assertThat(json).isNotNull();
+
+        String expected = readExpectedJson(test.getJsonAsStream());
+        assertThat(formatAsJson(json)).isEqualTo(expected);
     }
 
     protected abstract JsonReader createReader(InputStream in);
@@ -86,10 +92,9 @@ public abstract class AbstractJsonReaderTest {
         return target.toString();
     }
 
-    private String readExpectedJson(String name) {
+    private String readExpectedJson(InputStream in) {
         StringBuilder builder = new StringBuilder();
-        try (InputStream in = getClass().getResourceAsStream(name);
-             BufferedReader reader = new BufferedReader(
+        try (BufferedReader reader = new BufferedReader(
                      new InputStreamReader(in, StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
