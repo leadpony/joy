@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- Added a new JSON-P provider `joy-yaml` which can parse YAML documents with the help of [snakeyaml-engine](https://bitbucket.org/asomov/snakeyaml-engine). This artifact can be used as a substitute for the basic provider `joy-classic`. `JsonParser` and `JsonReader` provided by the new provider
+can process YAML documents.
+
+### Changed
+- The artifact ID of the original Joy is now changed to `joy-classic`.
+- Improved `JsonNumber.numberValue()` which now may return an instance of `Integer` or `Long` if applicable.
+
+### Fixed
+- Fixed the error message emitted when an array in the JSON document is not closed correctly.
+
 ## 2.0.0-RC1 - 2020-04-05
 ### Changed
 - The API package was renamed from `javax.json` to `jakarta.json`.
