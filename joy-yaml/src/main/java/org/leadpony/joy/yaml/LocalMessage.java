@@ -55,6 +55,10 @@ final class LocalMessage {
         return format("ParserDetectedUnexpectedEvent", at(location), event.getEventId());
     }
 
+    static String thatRequiredEventIsMissing() {
+        return format("RequiredEventIsMissing");
+    }
+
     /* helpers */
 
     private static String format(String name, Object... arguments) {

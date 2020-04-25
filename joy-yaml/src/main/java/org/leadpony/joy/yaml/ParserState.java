@@ -72,19 +72,21 @@ enum ParserState {
             if (it.hasNext()) {
                 Event event = it.next();
                 if (event.getEventId() == Event.ID.DocumentEnd) {
-                    return null;
+                    if (it.hasNext()) {
+                        event = it.next();
+                        switch (event.getEventId()) {
+                        case StreamEnd:
+                        case DocumentStart:
+                            return null;
+                        default:
+                            throw newUnexpectedEventException(event);
+                        }
+                    }
+                } else {
+                    throw newUnexpectedEventException(event);
                 }
-                JsonLocation location = locate(event);
-                event.getStartMark().ifPresent(mark -> {
-                    String message = Message.thatUnexpectedCharWasFound(
-                            location, firstCharOf(mark));
-                    throw newParsingException(message, location);
-                });
-                throw newParsingException(
-                        LocalMessage.thatParserDetectedUnexpectedEvent(location, event),
-                        location);
             }
-            return null;
+            throw new IllegalStateException(LocalMessage.thatRequiredEventIsMissing());
         }
     },
 
@@ -210,6 +212,16 @@ enum ParserState {
         JsonLocation location = locate(event);
         String message = LocalMessage.thatParserDetectedUnexpectedEvent(location, event);
         return new IllegalStateException(message);
+    }
+
+    protected static JsonParsingException newUnexpectedEventException(Event event) {
+        JsonLocation location = locate(event);
+        String message = event.getStartMark().map(
+                mark -> Message.thatUnexpectedCharWasFound(location, firstCharOf(mark))
+        ).orElseGet(
+                () -> LocalMessage.thatParserDetectedUnexpectedEvent(location, event)
+        );
+        return newParsingException(message, location);
     }
 
     /**
