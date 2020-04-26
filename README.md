@@ -33,8 +33,8 @@ For using this version, the following 2 dependencies neeed to be added in your `
 
 <dependency>
     <groupId>org.leadpony.joy</groupId>
-    <artifactId>joy</artifactId>
-    <version>2.0.0-RC1</version>
+    <artifactId>joy-classic</artifactId>
+    <version>2.0.0-RC2</version>
     <scope>runtime</scope>
 </dependency>
 ```
