@@ -1,7 +1,7 @@
 # Joy
 
 [![Apache 2.0 License](https://img.shields.io/:license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Maven Central](https://img.shields.io/maven-central/v/org.leadpony.joy/joy.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.leadpony.joy%22%20AND%20a:%22joy%22)
+[![Maven Central](https://img.shields.io/maven-central/v/org.leadpony.joy/joy-classic.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.leadpony.joy%22%20AND%20a:%22joy-classic%22)
 [![Javadocs](https://www.javadoc.io/badge/jakarta.json/jakarta.json-api.svg)](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api/1.1.6/index.html)
 [![Build Status](https://travis-ci.org/leadpony/joy.svg?branch=master)](https://travis-ci.org/leadpony/joy)
 
@@ -81,7 +81,7 @@ The following configuration properties are added.
 
 ## Additional Resources
 * [Jakarta JSON Processing API Reference in Javadoc](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api)
-* [Joy API Reference in Javadoc](https://javadoc.io/doc/org.leadpony.joy/joy)
+* [Joy API Reference in Javadoc](https://javadoc.io/doc/org.leadpony.joy/joy-core)
 * [Changelog](CHANGELOG.md)
 
 ## Building from Source
