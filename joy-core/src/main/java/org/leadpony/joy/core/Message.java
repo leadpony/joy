@@ -98,6 +98,10 @@ public final class Message {
         return format("IOErrorOccurredWhileParserWasClosing");
     }
 
+    public static String thatParserHasBeenAlreadyClosed() {
+        return format("ParserHasBeenAlreadyClosed");
+    }
+
     /*
      * Messages for JSON generator
      */

@@ -221,6 +221,10 @@ public abstract class AbstractJsonParser implements JsonParser {
 
     /* provides parsing exceptions */
 
+    protected JsonException newJsonException(String message) {
+        return new JsonException(message);
+    }
+
     protected JsonException newJsonException(String message, Exception e) {
         return new JsonException(message, e);
     }

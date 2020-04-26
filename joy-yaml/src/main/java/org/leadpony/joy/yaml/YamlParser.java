@@ -90,6 +90,8 @@ final class YamlParser extends AbstractJsonParser implements ParserContext {
             this.nextYamlEvent = null;
             this.eventType = state.processEvent(yamlEvent, this);
             return this.eventType.toJsonEvent();
+        } else if (alreadyClosed) {
+            throw newJsonException(Message.thatParserHasBeenAlreadyClosed());
         } else {
             throw new NoSuchElementException(Message.thatNoMoreParserEventsWereFound());
         }
