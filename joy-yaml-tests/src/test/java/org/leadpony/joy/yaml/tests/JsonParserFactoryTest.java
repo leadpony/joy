@@ -44,7 +44,7 @@ public class JsonParserFactoryTest {
     }
 
     @Nested
-    public class InputStreamTest extends AbstractJsonParserTest {
+    public class InputStreamTest extends JsonParserTest.BaseTest {
 
         @Override
         protected JsonParser createParser(InputStream in) {
@@ -53,7 +53,7 @@ public class JsonParserFactoryTest {
     }
 
     @Nested
-    public class InputStreamAndCharsetTest extends AbstractJsonParserTest {
+    public class InputStreamAndCharsetTest extends JsonParserTest.BaseTest {
 
         @Override
         protected JsonParser createParser(InputStream in) {
@@ -63,7 +63,7 @@ public class JsonParserFactoryTest {
     }
 
     @Nested
-    public class ReaderTest extends AbstractJsonParserTest {
+    public class ReaderTest extends JsonParserTest.BaseTest {
 
         @Override
         protected JsonParser createParser(InputStream in) {

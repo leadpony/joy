@@ -42,7 +42,7 @@ public class JsonReaderFactoryTest {
     }
 
     @Nested
-    public class InputStreamTest extends AbstractJsonReaderTest {
+    public class InputStreamTest extends JsonReaderTest.BaseTest {
 
         @Override
         protected JsonReader createReader(InputStream in) {
@@ -51,7 +51,7 @@ public class JsonReaderFactoryTest {
     }
 
     @Nested
-    public class InputStreamAndCharsetTest extends AbstractJsonReaderTest {
+    public class InputStreamAndCharsetTest extends JsonReaderTest.BaseTest {
 
         @Override
         protected JsonReader createReader(InputStream in) {
@@ -61,7 +61,7 @@ public class JsonReaderFactoryTest {
     }
 
     @Nested
-    public class ReaderTest extends AbstractJsonReaderTest {
+    public class ReaderTest extends JsonReaderTest.BaseTest {
 
         @Override
         protected JsonReader createReader(InputStream in) {
