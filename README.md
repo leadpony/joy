@@ -11,10 +11,10 @@ Joy is yet another implementation of [Jakarta JSON Processing API] (JSON-P).
 
 * Fully compliant with the latest specification of [Jakarta JSON Processing API].
 * Passes more than 2,000 tests provided by [JSON-P Test Suite].
-* Works perfect with [Jakarta JSON Binding] (JSON-B).
+* Works perfect with [Jakarta JSON Binding API] (JSON-B).
+* Supports YAML parsing and reading with the help of [snakeyaml-engine].
 * Supports Java 8 and higher.
 * Can be used as a modular jar in Java 9 and higher.
-* Developed from scratch to produce cleaner code.
 
 ## Getting Started
 
@@ -79,6 +79,25 @@ The following configuration properties are added.
   Uses a tab for indentation instead of spaces. The
   value of the property could be anything.
 
+## YAML Support
+
+All you need to do for parsing/reading YAML documents is switching the implementation from `joy-classic` to `joy-yaml` as shown below:
+
+```xml
+<dependency>
+    <groupId>org.leadpony.joy</groupId>
+    <artifactId>joy-yaml</artifactId>
+    <version>2.0.0-RC2</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
+Please note that there are some restrictions in the current implementation of `joy-yaml`.
+* Aliases are not supported and cause the parser/reader to throw an exception.
+* Anchors are silently ignored.
+* Multiple documents are not supported.
+* Both generating and writing YAML documents are not supported yet.
+
 ## Additional Resources
 * [Jakarta JSON Processing API Reference in Javadoc](https://www.javadoc.io/doc/jakarta.json/jakarta.json-api)
 * [Joy API Reference in Javadoc](https://javadoc.io/doc/org.leadpony.joy/joy-core)
@@ -108,9 +127,10 @@ You may obtain a copy of the License at
 <http://www.apache.org/licenses/LICENSE-2.0>
 
 [Apache 2.0 License]: https://www.apache.org/licenses/LICENSE-2.0
+[Apache Johnzon]: https://johnzon.apache.org/
+[Jakarta JSON Binding API]: http://json-b.net/
+[Jakarta JSON Processing]: https://eclipse-ee4j.github.io/jsonp/
 [Jakarta JSON Processing API]: https://eclipse-ee4j.github.io/jsonp/
-[Jakarta JSON Binding]: http://json-b.net/
 [JSON-P Test Suite]: https://github.com/leadpony/jsonp-test-suite
 [Maven]: https://maven.apache.org/
-[Jakarta JSON Processing]: https://eclipse-ee4j.github.io/jsonp/
-[Apache Johnzon]: https://johnzon.apache.org/
+[snakeyaml-engine]: https://bitbucket.org/asomov/snakeyaml-engine
