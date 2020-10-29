@@ -28,13 +28,13 @@ For using this version, the following 2 dependencies neeed to be added in your `
 <dependency>
     <groupId>jakarta.json</groupId>
     <artifactId>jakarta.json-api</artifactId>
-    <version>2.0.0-RC2</version>
+    <version>2.0.0</version>
 </dependency>
 
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy-classic</artifactId>
-    <version>2.0.0-RC2</version>
+    <version>2.0.0</version>
     <scope>runtime</scope>
 </dependency>
 ```
@@ -87,7 +87,7 @@ All you need to do for parsing/reading YAML documents is switching the implement
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy-yaml</artifactId>
-    <version>2.0.0-RC2</version>
+    <version>2.0.0</version>
     <scope>runtime</scope>
 </dependency>
 ```
