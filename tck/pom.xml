@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.leadpony.joy</groupId>
+        <artifactId>joy-parent</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>tck</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <target>
+                                <!-- download, unzip and rename TCK -->
+                                <get src="https://download.eclipse.org/jakartaee/jsonp/2.0/jakarta-jsonp-tck-2.0.0.zip"
+                                     dest="${project.build.directory}/tck.zip" skipexisting="true"/>
+                                <unzip src="${project.build.directory}/tck.zip"
+                                       dest="${project.build.directory}"/>
+                                <move file="${project.build.directory}/jsonp-tck"
+                                      tofile="${tck.home}"/>
+
+                                <!-- download, unzip, rename and chmod Ant -->
+                                <get src="https://archive.apache.org/dist/ant/binaries/apache-ant-${ant.version}-bin.zip"
+                                     dest="${project.build.directory}/ant.zip" skipexisting="true"/>
+                                <unzip src="${project.build.directory}/ant.zip"
+                                       dest="${project.build.directory}"/>
+                                <move file="${project.build.directory}/apache-ant-${ant.version}"
+                                      tofile="${ant.home}"/>
+                                <chmod dir="${ant.home}/bin"
+                                       perm="ugo+rx"
+                                       includes="*"/>
+
+                                <!-- keep copy of original ts.jte -->
+                                <copy file="${tck.home}/bin/ts.jte"
+                                      tofile="${tck.home}/bin/ts.jte.orig"/>
+
+                                <!-- setup ts.jte -->
+                                <replaceregexp file="${tck.home}/bin/ts.jte"
+                                               match="jsonp\.classes=(.*)"
+                                               replace="jsonp.classes=${work.home}/jars/json-api.jar${pathsep}${work.home}/jars/joy-core.jar${pathsep}${work.home}/jars/joy-classic.jar"
+                                               byline="true"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!-- run all the tests -->
+                                <exec executable="${ant.home}/bin/ant"
+                                      dir="${test.home}">
+                                    <arg value="-Dwork.dir=${work.home}/work"/>
+                                    <arg value="-Dreport.dir=${work.home}/report"/>
+                                    <arg value="run.all"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>jakarta.json</groupId>
+                                    <artifactId>jakarta.json-api</artifactId>
+                                    <version>${jsonp.version}</version>
+                                    <outputDirectory>${work.home}/jars</outputDirectory>
+                                    <destFileName>json-api.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.leadpony.joy</groupId>
+                                    <artifactId>joy-classic</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${work.home}/jars</outputDirectory>
+                                    <destFileName>joy-classic.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.leadpony.joy</groupId>
+                                    <artifactId>joy-core</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${work.home}/jars</outputDirectory>
+                                    <destFileName>joy-core.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <work.home>${project.build.directory}/work</work.home>
+        <ant.home>${project.build.directory}/ant</ant.home>
+        <tck.home>${project.build.directory}/tck</tck.home>
+        <test.home>${tck.home}/src/com/sun/ts/tests/jsonp</test.home>
+        <ant.version>1.10.9</ant.version>
+    </properties>
+
+</project>
