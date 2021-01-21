@@ -138,7 +138,7 @@ class JsonObjectImpl extends AbstractMap<String, JsonValue> implements JsonObjec
 
     @Override
     public boolean isNull(String name) {
-        return get(name) == JsonValue.NULL;
+        return get(name).equals(JsonValue.NULL);
     }
 
     /* As a Map */
