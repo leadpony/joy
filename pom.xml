@@ -227,6 +227,12 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>tck</id>
+            <modules>
+                <module>tck</module>
+            </modules>
+        </profile>
     </profiles>
 
     <!-- project information  -->
