@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.1.0 - 2021-01-24
+### Changed
+- `JsonPointer.add()` now can replace the value at root location with given array/object, regardless of the original type. This is a requirement from the TCK.
+
+### Fixed
+- `JsonObject.getBoolean()` and `JsonObject.isNull()` now correctly throws NPE if there exists no property for the specified key. (PR #12, #13 both are authored by @Thihup)
+- `JsonParserFactory.createParser(InputStream)` now correctly throws `JsonException` if character encoding cannot be determined automatically. (Issue #10 reported by @Thihup)
+-  Fixed a bug that was causing JSON Patch move operation on nonexistent value not to throw `JsonException`, if the source path is the same as the target path. (Issue #11 reported by @Thihup)
+
 ## 2.0.0 - 2020-10-29
 ### Changed
 - Updated the Jakarta API to 2.0.0.

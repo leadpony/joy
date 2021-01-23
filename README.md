@@ -34,7 +34,7 @@ For using this version, the following 2 dependencies neeed to be added in your `
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy-classic</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <scope>runtime</scope>
 </dependency>
 ```
@@ -87,7 +87,7 @@ All you need to do for parsing/reading YAML documents is switching the implement
 <dependency>
     <groupId>org.leadpony.joy</groupId>
     <artifactId>joy-yaml</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <scope>runtime</scope>
 </dependency>
 ```
@@ -119,7 +119,7 @@ There are other implementations compatible with this software.
 * [Apache Johnzon]
 
 ## Copyright Notice
-Copyright 2019-2020 the original author or authors. All rights reserved.
+Copyright 2019-2021 the original author or authors. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this product except in compliance with the License.
