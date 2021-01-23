@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the Joy Authors.
+ * Copyright 2019-2021 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,9 @@ final class StreamReaders {
             int b2 = in.read();
             if (b2 < 0) {
                 // 1 letter
+                if (b1 == 0) {
+                    throw unknownEncodingException();
+                }
                 return createReader(in, DEFAULT_ENCODING, (byte) b1);
             }
 
@@ -152,6 +155,10 @@ final class StreamReaders {
         PushbackInputStream s = new PushbackInputStream(in, bytes.length);
         s.unread(bytes);
         return new InputStreamReader(s, charset);
+    }
+
+    private static JsonException unknownEncodingException() {
+        return new JsonException(Message.thatCharacterEncodingCannotBeDetected());
     }
 
     private StreamReaders() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the Joy Authors.
+ * Copyright 2019-2021 the Joy Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,6 +100,10 @@ public final class Message {
 
     public static String thatParserHasBeenAlreadyClosed() {
         return format("ParserHasBeenAlreadyClosed");
+    }
+
+    public static String thatCharacterEncodingCannotBeDetected() {
+        return format("CharacterEncodingCannotBeDetected");
     }
 
     /*
