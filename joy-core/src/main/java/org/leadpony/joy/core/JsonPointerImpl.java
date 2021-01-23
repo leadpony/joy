@@ -399,12 +399,16 @@ final class JsonPointerImpl implements ExtendedJsonPointer {
 
         private static final int HASH_CODE = "".hashCode();
 
+        /**
+         * {@inheritDoc}
+         * A whole array/object can be replaced with an array/object.
+         */
         @Override
         @SuppressWarnings("unchecked")
         public <T extends JsonStructure> T add(T target, JsonValue value) {
             requireNonNull(target, "target");
             requireNonNull(value, "value");
-            if (target.getValueType() == value.getValueType()) {
+            if (JsonValues.isStructure(value)) {
                 return (T) value;
             }
             throw newJsonException(Message.thatJsonValueMustBeTheSameTypeAsTarget());
