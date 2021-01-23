@@ -213,16 +213,20 @@ interface PatchOperation {
             return Operation.MOVE;
         }
 
+        /**
+         * {@inheritDoc}
+         * @throws JsonException if there is no value to move or the value cannot be moved.
+         */
         @Override
         public <T extends JsonStructure> T apply(T target) {
             ExtendedJsonPointer from = JsonPointerImpl.parse(this.from);
             ExtendedJsonPointer to = getPointer();
+            JsonValue value = from.getValue(target);
             if (from.equals(to)) {
                 return target;
             } else if (to.startsWith(from)) {
                 throw new JsonException(Message.thatJsonValueCannotBeMoved(from, to));
             }
-            JsonValue value = from.getValue(target);
             T removed = from.remove(target);
             return to.add(removed, value);
         }
