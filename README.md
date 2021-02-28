@@ -20,7 +20,7 @@ Joy is yet another implementation of [Jakarta JSON Processing API] (JSON-P).
 
 ### Joy version 2
 
-Joy version 2 is an implementation of [Jakarta JSON Processing API] version 2.x, which is now migrated to `jakarta.json` package. Please note that this is still a prerelease and the API may be changed.
+Joy version 2 is an implementation of [Jakarta JSON Processing API] version 2.x, which is now defined in the `jakarta.json` package instead of `javax.json` package.
 
 For using this version, the following 2 dependencies neeed to be added in your `pom.xml` as an API and its implementation, respectively.
 
