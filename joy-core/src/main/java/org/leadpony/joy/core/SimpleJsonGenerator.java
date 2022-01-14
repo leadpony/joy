@@ -32,6 +32,7 @@ import jakarta.json.JsonException;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
+import jakarta.json.JsonValue.ValueType;
 import jakarta.json.stream.JsonGenerationException;
 
 import org.leadpony.joy.api.JsonGenerator;
@@ -43,14 +44,17 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
 
     private final Deque<State> stateStack = new ArrayDeque<>();
     private State state;
+    private final boolean valueStream;
 
     SimpleJsonGenerator() {
         this.state = State.INITIAL;
+        this.valueStream = false;
     }
 
-    SimpleJsonGenerator(char[] buffer) {
+    SimpleJsonGenerator(char[] buffer, boolean valueStream) {
         super(buffer);
         this.state = State.INITIAL;
+        this.valueStream = valueStream;
     }
 
     @Override
@@ -221,8 +225,14 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
 
     @Override
     public void close() {
-        if (state != State.FINAL) {
-            throw newJsonGenerationException(Message.thatGeneratorIsNotCompleted());
+        if (valueStream) {
+            if (state != State.INITIAL && state != State.NEXT_VALUE) {
+                throw newJsonGenerationException(Message.thatGeneratorIsNotCompleted());
+            }
+        } else {
+            if (state != State.FINAL) {
+                throw newJsonGenerationException(Message.thatGeneratorIsNotCompleted());
+            }
         }
     }
 
@@ -247,29 +257,29 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
 
     final void appendValue(JsonValue value) {
         switch (value.getValueType()) {
-        case ARRAY:
-            appendArray((JsonArray) value);
-            break;
-        case OBJECT:
-            appendObject((JsonObject) value);
-            break;
-        case STRING:
-            appendValue(((JsonString) value).getString());
-            break;
-        case NUMBER:
-            append(value.toString());
-            break;
-        case TRUE:
-            append("true");
-            break;
-        case FALSE:
-            append("false");
-            break;
-        case NULL:
-            appendNull();
-            break;
-        default:
-            break;
+            case ARRAY:
+                appendArray((JsonArray) value);
+                break;
+            case OBJECT:
+                appendObject((JsonObject) value);
+                break;
+            case STRING:
+                appendValue(((JsonString) value).getString());
+                break;
+            case NUMBER:
+                append(value.toString());
+                break;
+            case TRUE:
+                append("true");
+                break;
+            case FALSE:
+                append("false");
+                break;
+            case NULL:
+                appendNull();
+                break;
+            default:
+                break;
         }
     }
 
@@ -330,6 +340,10 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
         append(':');
     }
 
+    protected void appendSpace() {
+        append(' ');
+    }
+
     static JsonException newJsonException(String message, IOException e) {
         return new JsonException(message, e);
     }
@@ -349,75 +363,155 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
             @Override
             State writeStartObject(SimpleJsonGenerator g) {
                 g.appendOpeningBracket('{');
-                g.pushState(FINAL);
+                g.pushState(g.valueStream ? NEXT_VALUE : FINAL);
                 return START_OBJECT;
             }
 
             @Override
             State writeStartArray(SimpleJsonGenerator g) {
                 g.appendOpeningBracket('[');
-                g.pushState(FINAL);
+                g.pushState(g.valueStream ? NEXT_VALUE : FINAL);
                 return START_ARRAY;
             }
 
             @Override
             State write(SimpleJsonGenerator g, JsonValue value) {
                 g.appendValue(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State write(SimpleJsonGenerator g, String value) {
                 g.appendValue(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State write(SimpleJsonGenerator g, BigDecimal value) {
                 g.append(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State write(SimpleJsonGenerator g, BigInteger value) {
                 g.append(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State write(SimpleJsonGenerator g, int value) {
                 g.append(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State write(SimpleJsonGenerator g, long value) {
                 g.append(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State write(SimpleJsonGenerator g, double value) {
                 g.append(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State write(SimpleJsonGenerator g, boolean value) {
                 g.append(value);
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
 
             @Override
             State writeNull(SimpleJsonGenerator g) {
                 g.appendNull();
-                return FINAL;
+                return g.valueStream ? NEXT_VALUE : FINAL;
             }
         },
+        NEXT_VALUE(Message::thatIllegalGeneratorMethodWasCalledBeforeAll) {
+            @Override
+            State writeStartObject(SimpleJsonGenerator g) {
+                g.appendOpeningBracket('{');
+                g.pushState(NEXT_VALUE);
+                return START_OBJECT;
+            }
 
+            @Override
+            State writeStartArray(SimpleJsonGenerator g) {
+                g.appendOpeningBracket('[');
+                g.pushState(NEXT_VALUE);
+                return START_ARRAY;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, JsonValue value) {
+                if (!value.getValueType().equals(ValueType.OBJECT)
+                        && !value.getValueType().equals(ValueType.ARRAY)) {
+                    g.appendSpace();
+                }
+
+                g.appendValue(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, String value) {
+                g.appendSpace();
+                g.appendValue(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, BigDecimal value) {
+                g.appendSpace();
+                g.append(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, BigInteger value) {
+                g.appendSpace();
+                g.append(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, int value) {
+                g.appendSpace();
+                g.append(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, long value) {
+                g.appendSpace();
+                g.append(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, double value) {
+                g.appendSpace();
+                g.append(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State write(SimpleJsonGenerator g, boolean value) {
+                g.appendSpace();
+                g.append(value);
+                return NEXT_VALUE;
+            }
+
+            @Override
+            State writeNull(SimpleJsonGenerator g) {
+                g.appendSpace();
+                g.appendNull();
+                return NEXT_VALUE;
+            }
+        },
         FINAL(Message::thatIllegalGeneratorMethodWasCalledAfterAll) {
         },
-
         START_ARRAY(Message::thatIllegalGeneratorMethodWasCalledAfterArrayStart) {
 
             @Override
@@ -505,7 +599,6 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
                 return g.popState();
             }
         },
-
         ARRAY(Message::thatIllegalGeneratorMethodWasCalledAfterArrayItem) {
 
             @Override
@@ -593,7 +686,6 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
                 return g.popState();
             }
         },
-
         START_OBJECT(Message::thatIllegalGeneratorMethodWasCalledAfterObjectStart) {
 
             @Override
@@ -699,7 +791,6 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
                 return g.popState();
             }
         },
-
         KEY_NAME(Message::thatIllegalGeneratorMethodWasCalledAfterPropertyKey) {
 
             @Override
@@ -770,7 +861,6 @@ class SimpleJsonGenerator extends JsonStringBuilder implements JsonGenerator {
                 return OBJECT;
             }
         },
-
         OBJECT(Message::thatIllegalGeneratorMethodWasCalledAfterPropertyValue) {
             @Override
             State writeStartObject(SimpleJsonGenerator g, String name) {

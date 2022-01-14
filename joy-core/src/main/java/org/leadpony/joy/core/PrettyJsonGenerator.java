@@ -26,8 +26,9 @@ final class PrettyJsonGenerator extends CompactJsonGenerator {
     private final int indentationSize;
     private int indentationTotal;
 
-    PrettyJsonGenerator(Writer writer, CharBufferFactory bufferFactory, char indentationChar, int indentationSize) {
-        super(writer, bufferFactory);
+    PrettyJsonGenerator(Writer writer, CharBufferFactory bufferFactory, char indentationChar, int indentationSize,
+            boolean valueStream) {
+        super(writer, bufferFactory, valueStream);
         this.indentationChar = indentationChar;
         this.indentationSize = indentationSize;
     }

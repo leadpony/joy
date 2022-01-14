@@ -36,6 +36,8 @@ import jakarta.json.stream.JsonParsingException;
  */
 class BasicJsonParser extends AbstractJsonParser {
 
+    private final boolean valueStream;
+
     private final Reader reader;
     private boolean alreadyClosed;
 
@@ -76,9 +78,10 @@ class BasicJsonParser extends AbstractJsonParser {
 
     private JsonLocation location = BasicJsonLocation.INITIAL;
 
-    BasicJsonParser(Reader reader, CharBufferFactory bufferFactory) {
+    BasicJsonParser(Reader reader, CharBufferFactory bufferFactory, boolean valueStream) {
         this.reader = reader;
         this.bufferFactory = bufferFactory;
+        this.valueStream = valueStream;
 
         this.lineNumber = 1;
         this.readBuffer = bufferFactory.createBuffer();
@@ -87,7 +90,6 @@ class BasicJsonParser extends AbstractJsonParser {
     }
 
     /* As a JsonParser */
-
     @Override
     public boolean hasNext() {
         if (readyToNext) {
@@ -188,7 +190,6 @@ class BasicJsonParser extends AbstractJsonParser {
     }
 
     /* As a DefaultJsonParser */
-
     @Override
     public final Event getCurrentEvent() {
         return currentEvent;
@@ -224,7 +225,6 @@ class BasicJsonParser extends AbstractJsonParser {
     }
 
     /* As a BasicJsonParser */
-
     Event processKey() {
         consumeChar();
         return processKey(peekNonSpaceChar());
@@ -246,43 +246,43 @@ class BasicJsonParser extends AbstractJsonParser {
 
     Event processValue(int c) {
         switch (c) {
-        case '[':
-            consumeChar();
-            pushState(State.ARRAY_FIRST_ITEM);
-            return Event.START_ARRAY;
-        case '{':
-            consumeChar();
-            pushState(State.OBJECT_FIRST_KEY);
-            return Event.START_OBJECT;
-        case 't':
-            parseTrue();
-            return Event.VALUE_TRUE;
-        case 'f':
-            parseFalse();
-            return Event.VALUE_FALSE;
-        case 'n':
-            parseNull();
-            return Event.VALUE_NULL;
-        case '"':
-            parseString();
-            return Event.VALUE_STRING;
-        case '-':
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-            parseNumber(c);
-            return Event.VALUE_NUMBER;
-        case -1:
-            throw newUnexpectedEndException(ParserEventSet.VALUES);
-        default:
-            throw newUnexpectedCharException(c);
+            case '[':
+                consumeChar();
+                pushState(State.ARRAY_FIRST_ITEM);
+                return Event.START_ARRAY;
+            case '{':
+                consumeChar();
+                pushState(State.OBJECT_FIRST_KEY);
+                return Event.START_OBJECT;
+            case 't':
+                parseTrue();
+                return Event.VALUE_TRUE;
+            case 'f':
+                parseFalse();
+                return Event.VALUE_FALSE;
+            case 'n':
+                parseNull();
+                return Event.VALUE_NULL;
+            case '"':
+                parseString();
+                return Event.VALUE_STRING;
+            case '-':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                parseNumber(c);
+                return Event.VALUE_NUMBER;
+            case -1:
+                throw newUnexpectedEndException(ParserEventSet.VALUES);
+            default:
+                throw newUnexpectedCharException(c);
         }
     }
 
@@ -519,30 +519,30 @@ class BasicJsonParser extends AbstractJsonParser {
         consumeChar();
         int c = peekValueChar();
         switch (c) {
-        case '"':
-        case '\\':
-        case '/':
-            consumeChar();
-            return (char) c;
-        case 'b':
-            consumeChar();
-            return '\b';
-        case 'f':
-            consumeChar();
-            return '\f';
-        case 'n':
-            consumeChar();
-            return '\n';
-        case 'r':
-            consumeChar();
-            return '\r';
-        case 't':
-            consumeChar();
-            return '\t';
-        case 'u':
-            return unescapeUnicode();
-        default:
-            throw newUnexpectedCharException(c);
+            case '"':
+            case '\\':
+            case '/':
+                consumeChar();
+                return (char) c;
+            case 'b':
+                consumeChar();
+                return '\b';
+            case 'f':
+                consumeChar();
+                return '\f';
+            case 'n':
+                consumeChar();
+                return '\n';
+            case 'r':
+                consumeChar();
+                return '\r';
+            case 't':
+                consumeChar();
+                return '\t';
+            case 'u':
+                return unescapeUnicode();
+            default:
+                throw newUnexpectedCharException(c);
         }
     }
 
@@ -808,11 +808,12 @@ class BasicJsonParser extends AbstractJsonParser {
 
             @Override
             Event process(int c, BasicJsonParser parser) {
-                parser.setState(FINISHED);
+                if (!parser.valueStream) {
+                    parser.setState(FINISHED);
+                }
                 return parser.processValue(c);
             }
         },
-
         FINISHED() {
             @Override
             boolean accepts(int c, BasicJsonParser parser) {
@@ -828,7 +829,6 @@ class BasicJsonParser extends AbstractJsonParser {
                 throw parser.newUnexpectedCharException(c);
             }
         },
-
         ARRAY_FIRST_ITEM() {
             @Override
             Event process(int c, BasicJsonParser parser) {
@@ -845,7 +845,6 @@ class BasicJsonParser extends AbstractJsonParser {
                 return true;
             }
         },
-
         ARRAY_ITEM() {
             @Override
             Event process(int c, BasicJsonParser parser) {
@@ -865,7 +864,6 @@ class BasicJsonParser extends AbstractJsonParser {
                 return true;
             }
         },
-
         OBJECT_FIRST_KEY() {
             @Override
             Event process(int c, BasicJsonParser parser) {
@@ -882,7 +880,6 @@ class BasicJsonParser extends AbstractJsonParser {
                 return true;
             }
         },
-
         OBJECT_KEY() {
             @Override
             Event process(int c, BasicJsonParser parser) {
@@ -902,7 +899,6 @@ class BasicJsonParser extends AbstractJsonParser {
                 return true;
             }
         },
-
         OBJECT_VALUE() {
             @Override
             Event process(int c, BasicJsonParser parser) {

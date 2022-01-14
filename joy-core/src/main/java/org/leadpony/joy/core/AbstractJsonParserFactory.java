@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.leadpony.joy.core;
 
 import static org.leadpony.joy.core.Preconditions.requireNonNull;
@@ -34,12 +33,19 @@ import jakarta.json.stream.JsonParserFactory;
  */
 public abstract class AbstractJsonParserFactory extends ConfigurableFactory implements JsonParserFactory {
 
+    private static final String[] SUPPORTED_PROPERTIES = {
+        org.leadpony.joy.api.JsonParser.VALUE_STREAM
+    };
+
+    final boolean valueStream;
+
     protected AbstractJsonParserFactory(Map<String, ?> properties) {
-        this(properties, NO_SUPPORTED_PROPERTIES);
+        this(properties, SUPPORTED_PROPERTIES);
     }
 
     protected AbstractJsonParserFactory(Map<String, ?> properties, String[] supported) {
         super(properties, supported);
+        this.valueStream = containsProperty(org.leadpony.joy.api.JsonParser.VALUE_STREAM);
     }
 
     @Override

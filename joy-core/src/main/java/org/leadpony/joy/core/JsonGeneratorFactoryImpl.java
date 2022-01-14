@@ -38,7 +38,8 @@ class JsonGeneratorFactoryImpl extends ConfigurableFactory implements JsonGenera
     private static final String[] SUPPORTED_PROPERTIES = {
         JsonGenerator.PRETTY_PRINTING,
         JsonGenerator.INDENTATION_SIZE,
-        JsonGenerator.TAB_INDENTATION
+        JsonGenerator.TAB_INDENTATION,
+        JsonGenerator.VALUE_STREAM
     };
 
     private static final int DEFAULT_INDENTATION_SIZE = 4;
@@ -46,6 +47,7 @@ class JsonGeneratorFactoryImpl extends ConfigurableFactory implements JsonGenera
     private final boolean prettyPrinting;
     private final char indentationChar;
     private final int indentationSize;
+    private final boolean valueStream;
     private final CharBufferFactory bufferFactory;
 
     JsonGeneratorFactoryImpl(Map<String, ?> config, CharBufferFactory bufferFactory) {
@@ -59,6 +61,7 @@ class JsonGeneratorFactoryImpl extends ConfigurableFactory implements JsonGenera
             this.indentationChar = ' ';
             this.indentationSize = getPropertyValue(JsonGenerator.INDENTATION_SIZE, DEFAULT_INDENTATION_SIZE);
         }
+        this.valueStream = containsProperty(JsonGenerator.VALUE_STREAM);
     }
 
     @Override
@@ -84,9 +87,9 @@ class JsonGeneratorFactoryImpl extends ConfigurableFactory implements JsonGenera
 
     private JsonGenerator createConfiguredGenerator(Writer writer) {
         if (prettyPrinting) {
-            return new PrettyJsonGenerator(writer, bufferFactory, indentationChar, indentationSize);
+            return new PrettyJsonGenerator(writer, bufferFactory, indentationChar, indentationSize, valueStream);
         } else {
-            return new CompactJsonGenerator(writer, bufferFactory);
+            return new CompactJsonGenerator(writer, bufferFactory, valueStream);
         }
     }
 }
