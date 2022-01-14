@@ -43,14 +43,14 @@ class JsonParserFactoryImpl extends AbstractJsonParserFactory {
     @Override
     public JsonParser createParser(Reader reader) {
         requireNonNull(reader, "reader");
-        return new BasicJsonParser(reader, bufferFactory);
+        return new BasicJsonParser(reader, bufferFactory, this.valueStream);
     }
 
     @Override
     public JsonParser createParser(InputStream in) {
         requireNonNull(in, "in");
         Reader reader = createStreamReader(in);
-        return new BasicJsonParser(reader, bufferFactory);
+        return new BasicJsonParser(reader, bufferFactory, this.valueStream);
     }
 
     @Override
@@ -58,6 +58,6 @@ class JsonParserFactoryImpl extends AbstractJsonParserFactory {
         requireNonNull(in, "in");
         requireNonNull(charset, "charset");
         Reader reader = new InputStreamReader(in, charset);
-        return new BasicJsonParser(reader, bufferFactory);
+        return new BasicJsonParser(reader, bufferFactory, this.valueStream);
     }
 }

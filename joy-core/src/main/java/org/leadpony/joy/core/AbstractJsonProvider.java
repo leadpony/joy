@@ -70,14 +70,14 @@ public abstract class AbstractJsonProvider extends JsonProvider {
     @Override
     public JsonParser createParser(Reader reader) {
         requireNonNull(reader, "reader");
-        return new BasicJsonParser(reader, bufferFactory);
+        return new BasicJsonParser(reader, bufferFactory, false);
     }
 
     @Override
     public JsonParser createParser(InputStream in) {
         requireNonNull(in, "in");
         Reader reader = createStreamReader(in);
-        return new BasicJsonParser(reader, bufferFactory);
+        return new BasicJsonParser(reader, bufferFactory, false);
     }
 
     @Override
@@ -88,14 +88,14 @@ public abstract class AbstractJsonProvider extends JsonProvider {
     @Override
     public JsonGenerator createGenerator(Writer writer) {
         requireNonNull(writer, "writer");
-        return new CompactJsonGenerator(writer, bufferFactory);
+        return new CompactJsonGenerator(writer, bufferFactory, false);
     }
 
     @Override
     public JsonGenerator createGenerator(OutputStream out) {
         requireNonNull(out, "out");
         Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
-        return new CompactJsonGenerator(writer, bufferFactory);
+        return new CompactJsonGenerator(writer, bufferFactory, false);
     }
 
     @Override
@@ -118,7 +118,7 @@ public abstract class AbstractJsonProvider extends JsonProvider {
     @Override
     public JsonWriter createWriter(Writer writer) {
         requireNonNull(writer, "writer");
-        JsonGenerator generator = new CompactJsonGenerator(writer, bufferFactory);
+        JsonGenerator generator = new CompactJsonGenerator(writer, bufferFactory, false);
         return new JsonWriterImpl(generator);
     }
 
@@ -126,7 +126,7 @@ public abstract class AbstractJsonProvider extends JsonProvider {
     public JsonWriter createWriter(OutputStream out) {
         requireNonNull(out, "out");
         Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
-        JsonGenerator generator = new CompactJsonGenerator(writer, bufferFactory);
+        JsonGenerator generator = new CompactJsonGenerator(writer, bufferFactory, false);
         return new JsonWriterImpl(generator);
     }
 
@@ -202,7 +202,7 @@ public abstract class AbstractJsonProvider extends JsonProvider {
      * {@inheritDoc}
      *
      * @throws IllegalArgumentException if the type of {@code target} is not the
-     *                                  same as {@code source}.
+     * same as {@code source}.
      */
     @Override
     public JsonPatch createDiff(JsonStructure source, JsonStructure target) {

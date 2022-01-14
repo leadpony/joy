@@ -29,8 +29,8 @@ class CompactJsonGenerator extends SimpleJsonGenerator {
     private final CharBufferFactory bufferFactory;
     private boolean alreadyClosed;
 
-    CompactJsonGenerator(Writer writer, CharBufferFactory bufferFactory) {
-        super(bufferFactory.createBuffer());
+    CompactJsonGenerator(Writer writer, CharBufferFactory bufferFactory, boolean valueStream) {
+        super(bufferFactory.createBuffer(), valueStream);
         this.writer = decorateWriter(writer);
         this.bufferFactory = bufferFactory;
     }

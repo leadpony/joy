@@ -40,8 +40,8 @@ public interface JsonGenerator extends jakarta.json.stream.JsonGenerator {
     String INDENTATION_SIZE = "org.leadpony.joy.api.JsonGenerator.indentationSize";
 
     /**
-     * Configuration property to use a tab for indentation instead of spaces. The
-     * value of the property could be anything.
+     * Configuration property to use a tab for indentation instead of spaces.
+     * The value of the property could be anything.
      * <pre>
      * <code>
      * Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();
@@ -53,4 +53,18 @@ public interface JsonGenerator extends jakarta.json.stream.JsonGenerator {
      * @since 1.1
      */
     String TAB_INDENTATION = "org.leadpony.joy.api.JsonGenerator.tabIndentation";
+
+    /**
+     * Configuration property to indicate that the output of the generator is a
+     * sequence of JSON values. The value of the property could be anything.
+     * <pre>
+     * <code>
+     * Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();
+     * config.put(JsonGenerator.VALUE_STREAM, Boolean.TRUE);
+     * </code>
+     * </pre>
+     *
+     * @since 1.2
+     */
+    String VALUE_STREAM = "org.leadpony.joy.api.JsonGenerator.valueStream";
 }

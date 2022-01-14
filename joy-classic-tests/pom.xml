@@ -15,10 +15,6 @@
     <packaging>jar</packaging>
     <name>org.leadpony.joy.classic.tests</name>
 
-    <properties>
-        <maven.compiler.release>14</maven.compiler.release>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
